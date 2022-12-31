@@ -18,7 +18,7 @@ public class LCCUtilsCommandComponent extends CommandComponent {
         addNames("lccutils", "lccu", "lccutilities", "lccutil", "lccmm", "lccmythicmobs");
         setDescription("The main command for LccUtils.");
         setAuthor("0TickPulse");
-        addExamples("lccutils command slash");
+        addExamples("/lccutils component command slash");
     }
 
     @Override
@@ -27,8 +27,9 @@ public class LCCUtilsCommandComponent extends CommandComponent {
                 .withAliases(getAliases())
                 .withHelp(description, description)
                 .withPermission("lccutils.command.lccutils");
+        CommandAPICommand componentsCommand = new CommandAPICommand("component");
         for (Map.Entry<String, List<LccComponent<?>>> entry : ComponentManager.getComponents().entrySet()) {
-            cmd.withSubcommand(new CommandAPICommand(entry.getKey().toLowerCase())
+            componentsCommand.withSubcommand(new CommandAPICommand(entry.getKey().toLowerCase())
                     .withPermission("lccutils.command.lccutils." + entry.getKey().toLowerCase())
                     .withArguments(new MultiLiteralArgument(entry.getValue().stream().map(LccComponent::getName).toArray(String[]::new)))
                     .executes((sender, args) -> {
@@ -40,6 +41,7 @@ public class LCCUtilsCommandComponent extends CommandComponent {
                         sender.sendMessage(component.generateMinecraftEntry());
                     }));
         }
+        cmd.withSubcommand(componentsCommand);
         cmd.withSubcommand(new CommandAPICommand("generateDocs").executes((sender, args) -> {
             sender.sendMessage("Generating docs...");
             try {

@@ -225,10 +225,10 @@ public abstract class LccComponent<T extends LccComponent<?>> {
 
     public @Nullable Component generateMinecraftExamples() {
         if (examples.length > 0) {
-            Component component = Component.text("Examples").decorate(TextDecoration.BOLD).color(TextColor.color(0x0080FF))
-                    .append(Component.newline());
-            // replace for loop with map and reduce
-            Optional<TextComponent> exampleText = Arrays.stream(examples).map(s -> Component.text(s).color(TextColor.color(0x6E6E6E))).reduce((s, s2) -> s.append(Component.newline()).append(Component.newline()).append(s2));
+            TextComponent component = Component.text("Examples").decoration(TextDecoration.BOLD, TextDecoration.State.TRUE).color(TextColor.color(0x0080FF)).append(Component.newline()).append(Component.newline());
+            Optional<TextComponent> exampleText = Arrays.stream(examples).map(s ->
+                    Component.text(s).decoration(TextDecoration.BOLD, TextDecoration.State.FALSE).color(TextColor.color(0x87BBBB))
+            ).reduce((s, s2) -> s.append(Component.newline()).append(Component.newline()).append(s2));
             return exampleText.map(component::append).orElse(component);
         }
         return null;

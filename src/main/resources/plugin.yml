@@ -1,0 +1,7 @@
+name: LccUtils
+version: '${project.version}'
+main: net.tickmc.lccutils.LccUtils
+api-version: 1.18
+depend: [ MythicMobs ]
+softdepend: [ WorldGuard, PlaceholderAPI, mcMMO ]
+description: Adds utilities to Minecraft, made for LcorpCity.

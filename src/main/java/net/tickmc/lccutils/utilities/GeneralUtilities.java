@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -53,6 +54,15 @@ public class GeneralUtilities {
         return false;
     }
 
+    public static boolean containsIgnoreCase(Collection<String> list, String item) {
+        for (String string : list) {
+            if (string.equalsIgnoreCase(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Indents a string by a specified number of spaces.
      *
@@ -61,6 +71,16 @@ public class GeneralUtilities {
      */
     public static String indent(String text, int indent) {
         return Arrays.stream(text.split(System.lineSeparator())).map(line -> " ".repeat(indent) + line).reduce("", String::concat);
+    }
+
+    /**
+     * Returns a copy of the string that, if its length is greater than the specified length, is truncated to the specified length and concatenated with "...".
+     *
+     * @param text      The text to truncate.
+     * @param maxLength The maximum length of the string.
+     */
+    public static String overflow(String text, int maxLength) {
+        return text.length() > maxLength ? text.substring(0, maxLength - 3) + "..." : text;
     }
 
     /**

@@ -4,10 +4,10 @@ import com.gmail.nossr50.datatypes.party.Party;
 import com.gmail.nossr50.datatypes.player.McMMOPlayer;
 import com.gmail.nossr50.util.player.UserManager;
 import net.tickmc.lccutils.LccUtils;
-import net.tickmc.lccutils.components.LccComponent;
 import net.tickmc.lccutils.components.bridges.BridgeComponent;
 import net.tickmc.lccutils.components.conditions.mcmmo.McMMOSamePartyConditionComponent;
 import net.tickmc.lccutils.components.mythicplaceholders.mcmmo.McMMOPartyPlaceholderComponent;
+import net.tickmc.lccutils.documentation.DocumentationGenerator;
 import net.tickmc.lccutils.managers.ComponentManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -16,15 +16,18 @@ import org.jetbrains.annotations.Nullable;
 public class McMMOBridge extends BridgeComponent {
 
     public McMMOBridge() {
+        super();
         addNames("McMMO");
-        setDescription("LCCUtils has compatibility with McMMO. This bridge enables certain things like the " + LccComponent.getMarkdownLink(new McMMOPartyPlaceholderComponent()) + ".");
-        setAuthor("0TickPulse");
+        setDescription("LCCUtils has compatibility with McMMO. This bridge enables certain things like the " + DocumentationGenerator.MarkdownDocumentationGenerator.getInstance().link(new McMMOPartyPlaceholderComponent()) + ".");
+        addAuthors("0TickPulse");
     }
 
     @Override
     public void onLoad() {
-        ComponentManager.registerComponent(new McMMOSamePartyConditionComponent());
-        ComponentManager.registerComponent(new McMMOPartyPlaceholderComponent());
+        ComponentManager.registerComponents(
+            new McMMOSamePartyConditionComponent(),
+            new McMMOPartyPlaceholderComponent()
+        );
     }
 
     @Override

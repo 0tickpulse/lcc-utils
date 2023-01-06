@@ -2,6 +2,7 @@ package net.tickmc.lccutils.components.papi;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.tickmc.lccutils.LccUtils;
+import net.tickmc.lccutils.components.ComponentCategory;
 import net.tickmc.lccutils.components.LccComponent;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -11,10 +12,9 @@ public abstract class PAPIPlaceholderComponent extends LccComponent<PAPIPlacehol
 
     public abstract @Nullable String get(OfflinePlayer player, String arg);
 
-    @NotNull
-    @Override
-    public String getCategory() {
-        return "PapiPlaceholder";
+    public PAPIPlaceholderComponent() {
+        super();
+        setCategory(ComponentCategory.PAPI_PLACEHOLDER);
     }
 
     @Override
@@ -33,12 +33,12 @@ public abstract class PAPIPlaceholderComponent extends LccComponent<PAPIPlacehol
 
             @Override
             public @NotNull String getIdentifier() {
-                return getName();
+                return component.getName();
             }
 
             @Override
             public @NotNull String getAuthor() {
-                return author;
+                return component.getAuthorsString();
             }
 
             @Override
@@ -60,7 +60,8 @@ public abstract class PAPIPlaceholderComponent extends LccComponent<PAPIPlacehol
             public String onRequest(OfflinePlayer player, @NotNull String params) {
                 return component.get(player, params);
             }
-        };
+        }
         return new GeneratedExpansion();
-    };
+    }
+
 }

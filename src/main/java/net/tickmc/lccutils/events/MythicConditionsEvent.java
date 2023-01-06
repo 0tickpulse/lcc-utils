@@ -1,6 +1,7 @@
 package net.tickmc.lccutils.events;
 
 import io.lumine.mythic.bukkit.events.MythicConditionLoadEvent;
+import net.tickmc.lccutils.components.ComponentCategory;
 import net.tickmc.lccutils.components.LccComponent;
 import net.tickmc.lccutils.components.conditions.ConditionComponent;
 import net.tickmc.lccutils.managers.ComponentManager;
@@ -11,8 +12,8 @@ import org.bukkit.event.Listener;
 public class MythicConditionsEvent implements Listener {
     @EventHandler
     public void onMythicConditionsLoad(MythicConditionLoadEvent e) {
-        for (LccComponent<?> component : ComponentManager.getComponentsByCategory("Condition")) {
-            if (GeneralUtilities.containsIgnoreCase(component.names, e.getConditionName()) && component instanceof ConditionComponent condition) {
+        for (LccComponent<?> component : ComponentManager.getComponentsByCategory(ComponentCategory.MYTHIC_CONDITION)) {
+            if (GeneralUtilities.containsIgnoreCase(component.getNames(), e.getConditionName()) && component instanceof ConditionComponent condition) {
                 e.register(condition.getConditionConstructor().construct(e.getConfig()));
             }
         }

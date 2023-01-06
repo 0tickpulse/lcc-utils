@@ -5,3 +5,5 @@ api-version: 1.18
 depend: [ MythicMobs ]
 softdepend: [ WorldGuard, PlaceholderAPI, mcMMO ]
 description: Adds utilities to Minecraft, made for LcorpCity.
+loadbefore:
+  - WorldGuard

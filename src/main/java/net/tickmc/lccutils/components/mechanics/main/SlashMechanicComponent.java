@@ -9,8 +9,8 @@ import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.utils.Schedulers;
 import io.lumine.mythic.core.logging.MythicLogger;
 import io.lumine.mythic.core.skills.SkillExecutor;
-import net.tickmc.lccutils.components.mechanics.TransformableMechanic;
 import net.tickmc.lccutils.components.mechanics.MechanicComponent;
+import net.tickmc.lccutils.components.mechanics.TransformableMechanic;
 import net.tickmc.lccutils.utilities.SlashUtilities;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -24,33 +24,34 @@ import java.util.Set;
 
 public class SlashMechanicComponent extends MechanicComponent {
     public SlashMechanicComponent() {
+        super();
         addNames("slash", "runslash");
         setDescription("""
-                Performs a slash. This slash is executed by calculating points along a circle.
-                This circle is calculated by fields like `points` and `radius`.
-                When used effectively, this mechanic can simulate a weapon's slash.
-                This mechanic also provides entity targeting and allows you to specify actions performed on targeted entities through the `onhitskill` field.
-                However, if you want more lenient targeting, you can use the `@EntitiesInCone` targeter provided by Mythic.""");
-        setAuthor("0TickPulse");
+            Performs a slash. This slash is executed by calculating points along a circle.
+            This circle is calculated by fields like `points` and `radius`.
+            When used effectively, this mechanic can simulate a weapon's slash.
+            This mechanic also provides entity targeting and allows you to specify actions performed on targeted entities through the `onhitskill` field.
+            However, if you want more lenient targeting, you can use the `@EntitiesInCone` targeter provided by Mythic.""");
+        addAuthors("0TickPulse");
         addFields(TransformableMechanic.FIELDS);
         addFields(new ComponentField().addNames("onpointskill", "onpoint", "op").setDescription("The skill to perform for every point in the slash."),
-                new ComponentField().addNames("onhitskill", "onhit", "oh").setDescription("The skill to perform for every entity hit by the slash."),
-                new ComponentField().addNames("radius", "r").setDescription("The radius of the slash.").setDefaultValue("2"),
-                new ComponentField().addNames("points", "p").setDescription("The number of points in the slash.").setDefaultValue("5"),
-                new ComponentField().addNames("arc", "a").setDescription("The arc of the slash.").setDefaultValue("180"),
-                new ComponentField().addNames("interval", "i").setDescription("The interval between each iteration in the slash.").setDefaultValue("0"),
-                new ComponentField().addNames("iterationCount", "count", "ic", "c").setDescription("The number of points each iteration will have.").setDefaultValue("1"),
-                new ComponentField().addNames("lineDistance", "ld").setDescription("When slashing, sometimes the target entities are in between the caster and the points of the slash, causing the entity not to be hit. In order to circumvent this, the slash mechanic also takes points in between each slash point and checks for entities there. This is the distance between each line point. Set to 0 to disable.").setDefaultValue("0"),
-                new ComponentField().addNames("hitRadius", "hr").setDescription("Each point in the slash checks for entities within a certain radius to determine if the entity was hit. This is the horizontal radius of each point.").setDefaultValue("0.2"),
-                new ComponentField().addNames("verticalHitRadius", "vhr", "vr").setDescription("Each point in the slash checks for entities within a certain radius to determine if the entity was hit. This is the vertical radius of each point.").setDefaultValue("(The hitRadius field)"));
+            new ComponentField().addNames("onhitskill", "onhit", "oh").setDescription("The skill to perform for every entity hit by the slash."),
+            new ComponentField().addNames("radius", "r").setDescription("The radius of the slash.").setDefaultValue("2"),
+            new ComponentField().addNames("points", "p").setDescription("The number of points in the slash.").setDefaultValue("5"),
+            new ComponentField().addNames("arc", "a").setDescription("The arc of the slash.").setDefaultValue("180"),
+            new ComponentField().addNames("interval", "i").setDescription("The interval between each iteration in the slash.").setDefaultValue("0"),
+            new ComponentField().addNames("iterationCount", "count", "ic", "c").setDescription("The number of points each iteration will have.").setDefaultValue("1"),
+            new ComponentField().addNames("lineDistance", "ld").setDescription("When slashing, sometimes the target entities are in between the caster and the points of the slash, causing the entity not to be hit. In order to circumvent this, the slash mechanic also takes points in between each slash point and checks for entities there. This is the distance between each line point. Set to 0 to disable.").setDefaultValue("0"),
+            new ComponentField().addNames("hitRadius", "hr").setDescription("Each point in the slash checks for entities within a certain radius to determine if the entity was hit. This is the horizontal radius of each point.").setDefaultValue("0.2"),
+            new ComponentField().addNames("verticalHitRadius", "vhr", "vr").setDescription("Each point in the slash checks for entities within a certain radius to determine if the entity was hit. This is the vertical radius of each point.").setDefaultValue("(The hitRadius field)"));
         addExamples("""
-                SlashTest:
-                  Skills:
-                  - slash{onpointskill=SlashTestTick;points=80;r=5;rot=<random.1to180>} @forward{f=0;uel=true}
-                                        
-                SlashTestTick:
-                  Skills:
-                  - e:p{p=flame} @Origin""");
+            SlashTest:
+              Skills:
+              - slash{onpointskill=SlashTestTick;points=80;r=5;rot=<random.1to180>} @forward{f=0;uel=true}
+                                    
+            SlashTestTick:
+              Skills:
+              - e:p{p=flame} @Origin""");
     }
 
     public static class SlashMechanic extends TransformableMechanic implements ITargetedLocationSkill, ITargetedEntitySkill {
@@ -99,13 +100,13 @@ public class SlashMechanicComponent extends MechanicComponent {
         }
 
         @Override
-        public List<Location> getPoints(SkillMetadata skillMetadata, Location target) {
+        public List<Location> getPoints(SkillMetadata skillMetadata, Location target) throws IllegalArgumentException {
             return SlashUtilities.getSlashLocations(
-                    target,
-                    this.radius.get(skillMetadata),
-                    this.rotation.get(skillMetadata),
-                    this.points.get(skillMetadata),
-                    this.arc.get(skillMetadata)
+                target,
+                this.radius.get(skillMetadata),
+                this.rotation.get(skillMetadata),
+                this.points.get(skillMetadata),
+                this.arc.get(skillMetadata)
             );
         }
 

@@ -6,6 +6,14 @@ import net.tickmc.lccutils.components.papi.main.MythicPAPIPlaceholderComponent;
 import net.tickmc.lccutils.managers.ComponentManager;
 
 public class PlaceholderAPIBridge extends BridgeComponent {
+
+    public PlaceholderAPIBridge() {
+        super();
+        addNames("PlaceholderAPI");
+        setDescription("This plugin adds a 'mythic' placeholder to PlaceholderAPI.");
+        addAuthors("0TickPulse");
+    }
+
     @Override
     public void onDisable() {
     }

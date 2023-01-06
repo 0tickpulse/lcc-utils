@@ -1,22 +1,17 @@
 package net.tickmc.lccutils.components;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.tickmc.lccutils.utilities.ComponentUtilities;
-import net.tickmc.lccutils.utilities.GeneralUtilities;
-import net.tickmc.lccutils.utilities.MarkdownUtilities;
+import net.tickmc.lccutils.documentation.DocumentationGenerator;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Represents a component of the plugin. A component is a part of the plugin that can be enabled or disabled.
  * This should be extended by most applicable parts of the plugin.
- * In the constructor of your new component, you should set the metadata of the component, such as the name and description.
+ * In the constructor of your new component, you should set the metadata of the component, such as the title and description.
  * To make the workflow easier, you can create other abstract classes that extend this class but have some metadata already filled out.
  *
  * @author 0TickPulse
@@ -25,30 +20,49 @@ public abstract class LccComponent<T extends LccComponent<?>> {
     /**
      * The names of the component.
      * This will be displayed in the {@code /components} command, the documentation, and more.
-     * Keep in mind that in some places, the first element of this array will be used as the main name,
+     * Keep in mind that in some places, the first element of this array will be used as the main title,
      * and the rest will be used as aliases.
      */
-    public @NotNull String[] names = new String[0];
+    private @NotNull Set<String> names = new LinkedHashSet<>();
     /**
      * A short description of the component.
      * This will be displayed in the {@code /components} command, the documentation, and more.
      * It should display information on what the component does, and any other important information.
      */
-    public String description = "";
+    private String description = "";
     /**
-     * The author of the component. You should write your name here.
+     * The author of the component. You should write your title here.
      * This will be displayed in the {@code /components} command, the documentation, and more.
      */
-    public String author = "";
+    private Set<String> authors = new LinkedHashSet<>();
     /**
      * Any examples of how to use the component. This should be in the form of a code snippet.
      * This will be displayed in the {@code /components} command, the documentation, and more.
      */
-    public String[] examples = new String[0];
+    private Set<String> examples = new LinkedHashSet<>();
+    /**
+     * Any additional components that provides additional information about the component.
+     * This will be displayed in the {@code /components} command, the documentation, and more.
+     */
+    private Set<Class<? extends LccComponent<?>>> seeAlso = new LinkedHashSet<>();
     /**
      * If set to true, the component will not generate documentation.
      */
-    public boolean ignoreDocumentation = false;
+    private boolean ignoreDocumentation = false;
+    /**
+     * The category of the component. This will be used for sorting as well as documentation sections.
+     */
+    private @NotNull ComponentCategory category = ComponentCategory.MISCELLANEOUS;
+
+    /**
+     * Gets the names of the component.
+     *
+     * @see #names
+     */
+    @NotNull
+    public Set<String> getNames() {
+        return names;
+    }
 
     /**
      * Sets the names of the component. This will override any previous names. If you don't want to override the previous names, use {@link #addNames(String...)}.
@@ -57,7 +71,7 @@ public abstract class LccComponent<T extends LccComponent<?>> {
      * @see #names
      */
     public T setNames(String... names) {
-        this.names = names;
+        this.names = new LinkedHashSet<>(Arrays.asList(names));
         return (T) this;
     }
 
@@ -68,8 +82,17 @@ public abstract class LccComponent<T extends LccComponent<?>> {
      * @see #names
      */
     public T addNames(String... names) {
-        this.names = GeneralUtilities.include(this.names, names);
+        this.names.addAll(Arrays.asList(names));
         return (T) this;
+    }
+
+    /**
+     * Gets the description of the component.
+     *
+     * @see #description
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**
@@ -84,14 +107,43 @@ public abstract class LccComponent<T extends LccComponent<?>> {
     }
 
     /**
-     * Sets the author of the component.
+     * Gets the authors of the component.
      *
-     * @param author The author to set.
-     * @see #author
+     * @see #authors
      */
-    public T setAuthor(String author) {
-        this.author = author;
+    public Set<String> getAuthors() {
+        return authors;
+    }
+
+    /**
+     * Sets the author of the component. This will override any previous authors. If you don't want to override the previous authors, use {@link #addAuthors(String...)}.
+     *
+     * @param authors The author to set.
+     * @see #authors
+     */
+    public T setAuthors(Set<String> authors) {
+        this.authors = authors;
         return (T) this;
+    }
+
+    /**
+     * Adds authors to the component. This will not override any previous authors. If you want to override the previous authors (please don't), use .
+     *
+     * @param authors The authors to add.
+     * @see #authors
+     */
+    public T addAuthors(String... authors) {
+        this.authors.addAll(Arrays.asList(authors));
+        return (T) this;
+    }
+
+    /**
+     * Gets the examples of the component.
+     *
+     * @see #examples
+     */
+    public Set<String> getExamples() {
+        return examples;
     }
 
     /**
@@ -101,7 +153,7 @@ public abstract class LccComponent<T extends LccComponent<?>> {
      * @see #examples
      */
     public T setExamples(String[] examples) {
-        this.examples = examples;
+        this.examples = new LinkedHashSet<>(Arrays.asList(examples));
         return (T) this;
     }
 
@@ -112,8 +164,49 @@ public abstract class LccComponent<T extends LccComponent<?>> {
      * @see #examples
      */
     public T addExamples(String... examples) {
-        this.examples = GeneralUtilities.include(this.examples, examples);
+        this.examples.addAll(Arrays.asList(examples));
         return (T) this;
+    }
+
+    /**
+     * Gets the additional see-also of the component.
+     *
+     * @see #seeAlso
+     */
+    public Set<Class<? extends LccComponent<?>>> getSeeAlso() {
+        return seeAlso;
+    }
+
+    /**
+     * Sets the see also components of the component. This will override any previous see also components. If you don't want to override the previous see also components, use {@link #addSeeAlso(Class...)}.
+     *
+     * @param seeAlso The see also components to set.
+     * @see #seeAlso
+     */
+    public T setSeeAlso(Class<? extends LccComponent<?>>[] seeAlso) {
+        this.seeAlso = new LinkedHashSet<>(Arrays.asList(seeAlso));
+        return (T) this;
+    }
+
+    /**
+     * Adds see also components to the component. This will not override any previous see also components. If you want to override the previous see also components, use {@link #setSeeAlso(Class[])}.
+     *
+     * @param seeAlso The see also components to add.
+     * @see #seeAlso
+     */
+    @SafeVarargs
+    public final T addSeeAlso(Class<? extends LccComponent<?>>... seeAlso) {
+        this.seeAlso.addAll(Arrays.asList(seeAlso));
+        return (T) this;
+    }
+
+    /**
+     * Gets whether the component should be ignored by the documentation generator.
+     *
+     * @see #ignoreDocumentation
+     */
+    public boolean isIgnoreDocumentation() {
+        return ignoreDocumentation;
     }
 
     /**
@@ -128,18 +221,33 @@ public abstract class LccComponent<T extends LccComponent<?>> {
     }
 
     /**
-     * This should return a string containing the documentation for the component.
-     * This will be displayed in the {@code /components} command, the documentation, and more.
+     * Gets the category of this component.
+     *
+     * @see #category
      */
-    public abstract @NotNull String getCategory();
+    @NotNull
+    public ComponentCategory getCategory() {
+        return category;
+    }
 
     /**
-     * Returns the first name of the component. As mentioned in the documentation for {@link #names}, the first element of this array will be used as the main name.
+     * Sets the category and returns the component.
+     *
+     * @param category The category to set.
+     * @see #category
+     */
+    public T setCategory(ComponentCategory category) {
+        this.category = category;
+        return (T) this;
+    }
+
+    /**
+     * Returns the first title of the component. As mentioned in the documentation for {@link #names}, the first element of this array will be used as the main title.
      *
      * @see #names
      */
     public String getName() {
-        return names[0];
+        return names.iterator().next();
     }
 
     /**
@@ -148,111 +256,14 @@ public abstract class LccComponent<T extends LccComponent<?>> {
      * @see #names
      */
     public String[] getAliases() {
-        return Arrays.copyOfRange(names, 1, names.length);
+        return names.stream().skip(1).toArray(String[]::new);
     }
 
     /**
-     * Returns a markdown-formatted string containing the documentation for the component. In most cases, this should not be overridden, but if you want extra control, it is possible.
+     * Generates a comma-separated string of authors.
      */
-    public String generateMarkdownEntry() {
-        return MarkdownUtilities.join(
-                generateMarkdownName(),
-                generateMarkdownAliases(),
-                generateMarkdownDescription(),
-                generateMarkdownAuthor(),
-                generateMarkdownExamples()
-        );
-    }
-
-    public Component generateMinecraftEntry() {
-        return ComponentUtilities.joinComponentsAndCompress(
-                ComponentUtilities.hline,
-                Component.newline(),
-                generateMinecraftName(),
-                Component.newline(),
-                generateMinecraftAliases(),
-                Component.newline(),
-                Component.newline(),
-                generateMinecraftDescription(),
-                Component.newline(),
-                Component.newline(),
-                generateMinecraftExamples(),
-                Component.newline(),
-                Component.newline(),
-                generateMinecraftAuthor(),
-                Component.newline(),
-                ComponentUtilities.hline);
-    }
-
-    public String generateMarkdownName() {
-        return MarkdownUtilities.h3 + getCategory() + ": `" + getName() + "`";
-    }
-
-    public @Nullable Component generateMinecraftName() {
-        return Component.text(getCategory() + ": " + getName()).color(TextColor.color(0x0080FF));
-    }
-
-    public String generateMarkdownAliases() {
-        String[] aliases = getAliases();
-        if (aliases.length > 0) {
-            return "Aliases: " + Arrays.stream(aliases).map(s -> "`" + s + "`").reduce((s, s2) -> s + ", " + s2).orElse("");
-        }
-        return "";
-    }
-
-    public @Nullable Component generateMinecraftAliases() {
-        String[] aliases = getAliases();
-        if (aliases.length > 0) {
-            return Component.text("Aliases: " + Arrays.stream(aliases).reduce((s, s2) -> s + ", " + s2).orElse("")).color(TextColor.color(0x6E6E6E));
-        }
-        return null;
-    }
-
-    public String generateMarkdownDescription() {
-        return description;
-    }
-
-    public @Nullable Component generateMinecraftDescription() {
-        return Component.text(description).color(TextColor.color(0xC1C1C1));
-    }
-
-    public String generateMarkdownExamples() {
-        if (examples.length > 0) {
-            return MarkdownUtilities.h4 + "Examples" + MarkdownUtilities.SEPARATOR + Arrays.stream(examples).map(s -> MarkdownUtilities.codeBlock(s, "yaml")).reduce((s, s2) -> s + System.lineSeparator() + System.lineSeparator() + s2).orElse("");
-        }
-        return "";
-    }
-
-    public @Nullable Component generateMinecraftExamples() {
-        if (examples.length > 0) {
-            TextComponent component = Component.text("Examples").decoration(TextDecoration.BOLD, TextDecoration.State.TRUE).color(TextColor.color(0x0080FF)).append(Component.newline()).append(Component.newline());
-            Optional<TextComponent> exampleText = Arrays.stream(examples).map(s ->
-                    Component.text(s).decoration(TextDecoration.BOLD, TextDecoration.State.FALSE).color(TextColor.color(0x87BBBB))
-            ).reduce((s, s2) -> s.append(Component.newline()).append(Component.newline()).append(s2));
-            return exampleText.map(component::append).orElse(component);
-        }
-        return null;
-    }
-
-    public String generateMarkdownAuthor() {
-        return "Author: " + author;
-    }
-
-    public @Nullable Component generateMinecraftAuthor() {
-        return Component.text("Author: ").color(TextColor.color(0x6E6E6E))
-                .append(Component.text(author).color(TextColor.color(0x0080FF)));
-    }
-
-    /**
-     * Generates a link to the documentation page for this component for use in markdown.
-     */
-    public static String getMarkdownLink(LccComponent<?> component) {
-        String title = component.generateMarkdownName().replaceFirst(MarkdownUtilities.h3, "");
-        return MarkdownUtilities.link(title, "#" + GeneralUtilities.trimToCharacterSet(title.toLowerCase().replace(' ', '-'), "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789_-#"));
-    }
-
-    public String getMarkdownLink() {
-        return getMarkdownLink(this);
+    public String getAuthorsString() {
+        return String.join(", ", authors);
     }
 
     /**
@@ -264,4 +275,12 @@ public abstract class LccComponent<T extends LccComponent<?>> {
      * A method that is called when the component is unregistered.
      */
     public abstract void onDisable();
+
+    public String generateMarkdownEntry() {
+        return DocumentationGenerator.MarkdownDocumentationGenerator.getInstance().generate(this);
+    }
+
+    public Component generateMinecraftEntry() {
+        return DocumentationGenerator.MinecraftDocumentationGenerator.getInstance().generate(this);
+    }
 }

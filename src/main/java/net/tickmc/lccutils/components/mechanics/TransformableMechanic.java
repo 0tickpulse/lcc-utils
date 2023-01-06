@@ -61,16 +61,16 @@ public abstract class TransformableMechanic extends SkillMechanic implements ITa
      * A list of fields that can be used via {@link ComponentWithFields#addFields(ComponentWithFields.ComponentField...)}
      */
     public static ComponentWithFields.ComponentField[] FIELDS = {
-            new ComponentWithFields.ComponentField().addNames("xoffset", "xo", "ox", "xoff").setDescription("Additional offset in the X-axis.").setDefaultValue("0"),
-            new ComponentWithFields.ComponentField().addNames("yoffset", "yo", "oy", "yoff").setDescription("Additional offset in the Y-axis.").setDefaultValue("0"),
-            new ComponentWithFields.ComponentField().addNames("zoffset", "zo", "oz", "zoff").setDescription("Additional offset in the Z-axis.").setDefaultValue("0"),
-            new ComponentWithFields.ComponentField().addNames("forwardoffset", "fo", "of", "foff").setDescription("Additional forward offset. This is based on the caster's yaw and pitch.").setDefaultValue("0"),
-            new ComponentWithFields.ComponentField().addNames("rightoffset", "ro", "or", "roff").setDescription("Additional right offset. This is based on the caster's yaw and pitch. This is equivalent to `forwardoffset` but with pitch set to 0 and yaw rotated by -90.").setDefaultValue("0"),
-            new ComponentWithFields.ComponentField().addNames("verticalOffset", "vo", "ov", "voff").setDescription("Additional vertical offset. This is based on the caster's yaw and pitch. This is equivalent to `forwardoffset` but with pitch rotated by +90.").setDefaultValue("0"),
-            new ComponentWithFields.ComponentField().addNames("scale").setDescription("This mechanic takes the points and calculates a center point. Then, for each of the points, it calculates a vector from the center to that point. The size field simply multiplies this vector.").setDefaultValue("1"),
-            new ComponentWithFields.ComponentField().addNames("rotation", "rot").setDescription("The rotation of the slash in degrees.").setDefaultValue("0"),
-            new ComponentWithFields.ComponentField().addNames("radians", "rad", "useradians", "ur").setDescription("Whether to use radians instead of degrees for the rotation.").setDefaultValue("false"),
-            new ComponentWithFields.ComponentField().addNames("inferdirection", "inferdir", "id").setDescription("If set to true, instead of getting the direction from the target location, it gets the direction of an arbitrary vector from the caster to the target location.").setDefaultValue("false")
+        new ComponentWithFields.ComponentField().addNames("xoffset", "xo", "ox", "xoff").setDescription("Additional offset in the X-axis.").setDefaultValue("0"),
+        new ComponentWithFields.ComponentField().addNames("yoffset", "yo", "oy", "yoff").setDescription("Additional offset in the Y-axis.").setDefaultValue("0"),
+        new ComponentWithFields.ComponentField().addNames("zoffset", "zo", "oz", "zoff").setDescription("Additional offset in the Z-axis.").setDefaultValue("0"),
+        new ComponentWithFields.ComponentField().addNames("forwardoffset", "fo", "of", "foff").setDescription("Additional forward offset. This is based on the caster's yaw and pitch.").setDefaultValue("0"),
+        new ComponentWithFields.ComponentField().addNames("rightoffset", "ro", "or", "roff").setDescription("Additional right offset. This is based on the caster's yaw and pitch. This is equivalent to `forwardoffset` but with pitch set to 0 and yaw rotated by -90.").setDefaultValue("0"),
+        new ComponentWithFields.ComponentField().addNames("verticalOffset", "vo", "ov", "voff").setDescription("Additional vertical offset. This is based on the caster's yaw and pitch. This is equivalent to `forwardoffset` but with pitch rotated by +90.").setDefaultValue("0"),
+        new ComponentWithFields.ComponentField().addNames("scale").setDescription("This mechanic takes the points and calculates a center point. Then, for each of the points, it calculates a vector from the center to that point. The size field simply multiplies this vector.").setDefaultValue("1"),
+        new ComponentWithFields.ComponentField().addNames("rotation", "rot").setDescription("The rotation of the slash in degrees.").setDefaultValue("0"),
+        new ComponentWithFields.ComponentField().addNames("radians", "rad", "useradians", "ur").setDescription("Whether to use radians instead of degrees for the rotation.").setDefaultValue("false"),
+        new ComponentWithFields.ComponentField().addNames("inferdirection", "inferdir", "id").setDescription("If set to true, instead of getting the direction from the target location, it gets the direction of an arbitrary vector from the caster to the target location.").setDefaultValue("false")
     };
 
     protected final PlaceholderDouble xOffset;
@@ -127,12 +127,12 @@ public abstract class TransformableMechanic extends SkillMechanic implements ITa
             location.add(xOffset.get(), yOffset.get(), zOffset.get());
             // add relative offsets
             location = LocationUtilities.relativeOffset(
-                    location.clone().setDirection(
-                            casterLocation.getDirection()
-                    ),
-                    forwardOffset.get(),
-                    rightOffset.get(),
-                    verticalOffset.get()
+                location.clone().setDirection(
+                    casterLocation.getDirection()
+                ),
+                forwardOffset.get(),
+                rightOffset.get(),
+                verticalOffset.get()
             );
             // rotations
             Vector casterToTarget = location.toVector().subtract(casterLocation.toVector());

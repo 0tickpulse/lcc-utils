@@ -25,8 +25,7 @@ public abstract class LocationMythicPlaceholderComponent extends MythicPlacehold
         return this;
     }
 
-    @Override
-    public void onEnable() {
+    public void load() {
         register(Arrays.stream(originalNames).map("target."::concat).toArray(String[]::new), Placeholder.location((location, arg) -> get(BukkitAdapter.adapt(location), arg)));
     }
 

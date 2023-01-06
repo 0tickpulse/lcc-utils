@@ -1,9 +1,10 @@
 package net.tickmc.lccutils.components.commands.main;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.MultiLiteralArgument;
-import net.tickmc.lccutils.components.commands.CommandComponent;
+import net.tickmc.lccutils.LccUtils;
+import net.tickmc.lccutils.components.ComponentCategory;
 import net.tickmc.lccutils.components.LccComponent;
+import net.tickmc.lccutils.components.commands.CommandComponent;
 import net.tickmc.lccutils.documentation.DocumentationManager;
 import net.tickmc.lccutils.managers.ComponentManager;
 import net.tickmc.lccutils.utilities.Debug;
@@ -15,33 +16,40 @@ import java.util.Map;
 public class LCCUtilsCommandComponent extends CommandComponent {
 
     public LCCUtilsCommandComponent() {
-        addNames("lccutils", "lccu", "lccutilities", "lccutil", "lccmm", "lccmythicmobs");
+        super();
+        addNames("lccutils", "lccu", "lccutilities", "lccutil", "lccmm", "lccmythicmobs", "lccmythic", "lcc");
         setDescription("The main command for LccUtils.");
-        setAuthor("0TickPulse");
+        addAuthors("0TickPulse");
         addExamples("/lccutils component command slash");
     }
 
     @Override
     public @NotNull CommandAPICommand getCommand() {
         CommandAPICommand cmd = new CommandAPICommand(getName())
-                .withAliases(getAliases())
-                .withHelp(description, description)
-                .withPermission("lccutils.command.lccutils");
+            .withAliases(getAliases())
+            .withHelp(getDescription(), getDescription())
+            .withPermission("lccutils.command.lccutils");
         CommandAPICommand componentsCommand = new CommandAPICommand("component");
-        for (Map.Entry<String, List<LccComponent<?>>> entry : ComponentManager.getComponents().entrySet()) {
-            componentsCommand.withSubcommand(new CommandAPICommand(entry.getKey().toLowerCase())
-                    .withPermission("lccutils.command.lccutils." + entry.getKey().toLowerCase())
-                    .withArguments(new MultiLiteralArgument(entry.getValue().stream().map(LccComponent::getName).toArray(String[]::new)))
+        for (Map.Entry<ComponentCategory, List<LccComponent<?>>> entry : ComponentManager.getComponents().entrySet()) {
+            CommandAPICommand subcommand = new CommandAPICommand(entry.getKey().getSimpleReadableName())
+                .withPermission("lccutils.command.lccutils." + entry.getKey().getSimpleReadableName());
+            for (LccComponent<?> component : entry.getValue()) {
+                subcommand.withSubcommand(new CommandAPICommand(component.getName().replace(" ", "_"))
+                    .withPermission("lccutils.command.lccutils." + entry.getKey().getSimpleReadableName() + "." + component.getName())
                     .executes((sender, args) -> {
-                        LccComponent<?> component = ComponentManager.getComponentsByName(entry.getKey(), (String) args[0]).get(0);
-                        if (component == null) {
-                            sender.sendMessage("§cComponent not found.");
-                            return;
-                        }
                         sender.sendMessage(component.generateMinecraftEntry());
-                    }));
+                    })
+                );
+            }
+            componentsCommand.withSubcommand(subcommand);
         }
         cmd.withSubcommand(componentsCommand);
+
+        /*
+         * SUBCOMMANDS
+         */
+
+        // generate docs
         cmd.withSubcommand(new CommandAPICommand("generateDocs").executes((sender, args) -> {
             sender.sendMessage("Generating docs...");
             try {
@@ -50,6 +58,12 @@ public class LCCUtilsCommandComponent extends CommandComponent {
                 sender.sendMessage(Debug.formatException(e));
             }
         }));
+
+        cmd.withSubcommand(new CommandAPICommand("debug").executes((sender, args) -> {
+            LccUtils.debug = !LccUtils.debug;
+            sender.sendMessage("Debug mode is now " + LccUtils.debug + "!");
+        }));
+
         return cmd;
     }
 }

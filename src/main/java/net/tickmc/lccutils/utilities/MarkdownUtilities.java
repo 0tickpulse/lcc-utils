@@ -35,7 +35,9 @@ public class MarkdownUtilities {
 
     public static final String horizontalRule = "----------";
 
-    /** System-dependent line separator. */
+    /**
+     * System-dependent line separator.
+     */
     public static final String SEPARATOR = System.lineSeparator().repeat(2);
 
     /**

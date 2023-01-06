@@ -18,11 +18,12 @@ import java.util.Map;
 public class CanAttackConditionComponent extends ConditionComponent {
 
     public CanAttackConditionComponent() {
+        super();
         addNames("canattack", "canattackentity", "candamage", "candamageentity");
         setDescription("Checks if an entity can attack another entity by simulating a damage event.");
-        setAuthor("0TickPulse");
+        addAuthors("0TickPulse");
         addFields(
-                new ComponentField().addNames("cause", "damagecause", "c").setDescription("The cause of the damage event.").setDefaultValue("CUSTOM")
+            new ComponentField().addNames("cause", "damagecause", "c").setDescription("The cause of the damage event.").setDefaultValue("CUSTOM")
         );
     }
 
@@ -57,12 +58,12 @@ public class CanAttackConditionComponent extends ConditionComponent {
             Map<EntityDamageEvent.DamageModifier, Function<Double, Double>> modifierFunctions = new HashMap<>();
             modifierFunctions.put(EntityDamageEvent.DamageModifier.BASE, input -> input);
             EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(
-                    attacker,
-                    targetEntity,
-                    cause,
-                    damageMap,
-                    modifierFunctions,
-                    false);
+                attacker,
+                targetEntity,
+                cause,
+                damageMap,
+                modifierFunctions,
+                false);
             try {
                 Bukkit.getPluginManager().callEvent(event);
                 return !event.isCancelled();

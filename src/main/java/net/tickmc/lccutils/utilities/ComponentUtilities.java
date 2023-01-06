@@ -4,12 +4,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.jetbrains.annotations.Nullable;
 
 public class ComponentUtilities {
     public static Component hline = Component.text(" ".repeat(80)).color(TextColor.color(0x232323)).decorate(TextDecoration.STRIKETHROUGH);
 
-    public static Component joinComponents(@Nullable Component... components) {
+    public static Component joinComponents(Component... components) {
         Component component = Component.empty();
         for (Component c : components) {
             if (c != null) {
@@ -19,7 +18,7 @@ public class ComponentUtilities {
         return component;
     }
 
-    public static Component joinComponentsAndCompress(@Nullable Component... components) {
+    public static Component joinComponentsAndCompress(Component... components) {
         Component component = Component.empty();
         for (Component c : components) {
             if (c == null) {
@@ -30,7 +29,7 @@ public class ComponentUtilities {
                 continue;
             }
             if (component.children().get(component.children().size() - 1).equals(Component.newline()) &&
-                    component.children().get(component.children().size() - 2).equals(Component.newline())) {
+                component.children().get(component.children().size() - 2).equals(Component.newline())) {
                 if (c.equals(Component.newline())) {
                     continue;
                 }

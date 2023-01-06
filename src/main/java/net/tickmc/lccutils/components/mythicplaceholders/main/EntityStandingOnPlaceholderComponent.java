@@ -3,12 +3,13 @@ package net.tickmc.lccutils.components.mythicplaceholders.main;
 import net.tickmc.lccutils.components.mythicplaceholders.EntityMythicPlaceholderComponent;
 import org.bukkit.entity.Entity;
 
-public class StandingOnPlaceholderComponent extends EntityMythicPlaceholderComponent {
+public class EntityStandingOnPlaceholderComponent extends EntityMythicPlaceholderComponent {
 
-    public StandingOnPlaceholderComponent() {
+    public EntityStandingOnPlaceholderComponent() {
+        super();
         addNames("standing_on");
-        setDescription("Returns the name of the block the entity is standing on.");
-        setAuthor("0TickPulse");
+        setDescription("Returns the title of the block the entity is standing on.");
+        addAuthors("0TickPulse");
     }
 
     @Override

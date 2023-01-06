@@ -28,51 +28,51 @@ public class Debug {
 
     public static String formatError(String message) {
         return foregroundColor(new Color(0xFF0000))
-                + "An unexpected error occured!"
-                + foregroundColor(new Color(0xFFFFFF))
-                + System.lineSeparator()
-                + message;
+            + "An unexpected error occured!"
+            + foregroundColor(new Color(0xFFFFFF))
+            + System.lineSeparator()
+            + message;
     }
 
     public static String formatException(Throwable e) {
         return foregroundColor(new Color(0xFF0000))
-                + "An internal exception occured!"
-                + foregroundColor(new Color(0xFFFFFF))
-                + System.lineSeparator()
-                + e.getLocalizedMessage()
-                + System.lineSeparator()
-                + Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).reduce("", (a, b) -> a + System.lineSeparator() + b);
+            + "An internal exception occured!"
+            + foregroundColor(new Color(0xFFFFFF))
+            + System.lineSeparator()
+            + e.getLocalizedMessage()
+            + System.lineSeparator()
+            + Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).reduce("", (a, b) -> a + System.lineSeparator() + b);
     }
 
     public static void error(String message) {
         LccUtils.getPlugin().getLogger().log(
-                Level.SEVERE,
-                formatError(message)
+            Level.SEVERE,
+            formatError(message)
         );
     }
 
     public static void error(Throwable e) {
         LccUtils.getPlugin().getLogger().log(
-                Level.SEVERE,
-                formatException(e)
+            Level.SEVERE,
+            formatException(e)
         );
     }
 
     public static void log(String message) {
         LccUtils.getPlugin().getLogger().log(
-                Level.INFO,
-                message
+            Level.INFO,
+            message
         );
     }
 
     public static void devLog(String message) {
         if (LccUtils.getPlugin().debug) {
             LccUtils.getPlugin().getLogger().log(
-                    Level.INFO,
-                    foregroundColor(new Color(0x00FF00))
-                            + "[DEV] "
-                            + foregroundColor(new Color(0xFFFFFF))
-                            + message
+                Level.INFO,
+                foregroundColor(new Color(0x00FF00))
+                    + "[DEV] "
+                    + foregroundColor(new Color(0xFFFFFF))
+                    + message
             );
         }
     }

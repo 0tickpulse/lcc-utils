@@ -1,5 +1,6 @@
 package net.tickmc.lccutils.managers;
 
+import net.tickmc.lccutils.components.ComponentCategory;
 import net.tickmc.lccutils.components.LccComponent;
 
 import java.util.ArrayList;
@@ -19,7 +20,14 @@ public class ComponentManager {
             super(message);
         }
     }
-    private static final Map<String, List<LccComponent<?>>> components = new HashMap<>();
+
+    private static final Map<ComponentCategory, List<LccComponent<?>>> components = new HashMap<>();
+
+    public static void registerComponents(LccComponent<?>... components) {
+        for (LccComponent<?> component : components) {
+            registerComponent(component);
+        }
+    }
 
     /**
      * Registers a component.
@@ -27,7 +35,7 @@ public class ComponentManager {
      * @param component The component to register.
      */
     public static void registerComponent(LccComponent<?> component) {
-        String category = component.getCategory();
+        ComponentCategory category = component.getCategory();
         if (!components.containsKey(category)) {
             components.put(category, new ArrayList<>());
         }
@@ -41,7 +49,7 @@ public class ComponentManager {
      * @param component The component to unregister.
      */
     public static void unregisterComponent(LccComponent<?> component) {
-        String category = component.getCategory();
+        ComponentCategory category = component.getCategory();
         if (components.containsKey(category)) {
             components.get(category).remove(component);
             component.onDisable();
@@ -72,14 +80,14 @@ public class ComponentManager {
     /**
      * Returns a list of all registered components' categories.
      */
-    public static List<String> getCategories() {
+    public static List<ComponentCategory> getCategories() {
         return new ArrayList<>(components.keySet());
     }
 
     /**
      * Returns a list of all registered components in the specified category.
      */
-    public static List<LccComponent<?>> getComponentsByCategory(String category) {
+    public static List<LccComponent<?>> getComponentsByCategory(ComponentCategory category) {
         List<LccComponent<?>> list = components.get(category);
         if (list == null) {
             return new ArrayList<>();
@@ -87,7 +95,7 @@ public class ComponentManager {
         return list;
     }
 
-    public static List<LccComponent<?>> getComponentsByName(String category, String name) {
+    public static List<LccComponent<?>> getComponentsByName(ComponentCategory category, String name) {
         List<LccComponent<?>> list = components.get(category);
         if (list == null) {
             return new ArrayList<>();
@@ -104,7 +112,7 @@ public class ComponentManager {
     /**
      * Returns the raw map of components.
      */
-    public static Map<String, List<LccComponent<?>>> getComponents() {
+    public static Map<ComponentCategory, List<LccComponent<?>>> getComponents() {
         return components;
     }
 }

@@ -24,8 +24,7 @@ public abstract class EntityMythicPlaceholderComponent extends MythicPlaceholder
         return this;
     }
 
-    @Override
-    public void onEnable() {
+    public void load() {
         register(Arrays.stream(originalNames).map("caster."::concat).toArray(String[]::new), Placeholder.meta((meta, arg) -> get(meta.getCaster().getEntity().getBukkitEntity(), arg)));
         register(Arrays.stream(originalNames).map("target."::concat).toArray(String[]::new), Placeholder.entity((entity, arg) -> get(entity.getBukkitEntity(), arg)));
         register(Arrays.stream(originalNames).map("trigger."::concat).toArray(String[]::new), Placeholder.meta((meta, arg) -> get(meta.getTrigger().getBukkitEntity(), arg)));

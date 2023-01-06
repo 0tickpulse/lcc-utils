@@ -6,10 +6,10 @@ import org.bukkit.entity.Entity;
 import java.util.*;
 
 import static java.lang.Math.*;
-import static java.lang.Math.toRadians;
 
 /**
  * A class that provides methods for slashes - arcs of a circle.
+ *
  * @author 0TickPulse
  */
 public class SlashUtilities {

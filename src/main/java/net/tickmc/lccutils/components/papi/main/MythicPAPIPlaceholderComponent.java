@@ -14,9 +14,10 @@ import org.jetbrains.annotations.Nullable;
 public class MythicPAPIPlaceholderComponent extends PAPIPlaceholderComponent {
 
     public MythicPAPIPlaceholderComponent() {
+        super();
         addNames("mythic");
         setDescription("Parses a mythic expression and return the result. To get the player, use 'caster'.");
-        setAuthor("0TickPulse");
+        addAuthors("0TickPulse");
     }
 
     @Nullable

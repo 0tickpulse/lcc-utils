@@ -1,6 +1,7 @@
 package net.tickmc.lccutils.documentation;
 
 import net.tickmc.lccutils.LccUtils;
+import net.tickmc.lccutils.components.ComponentCategory;
 import net.tickmc.lccutils.components.LccComponent;
 import net.tickmc.lccutils.managers.ComponentManager;
 import net.tickmc.lccutils.utilities.Debug;
@@ -20,8 +21,8 @@ public class DocumentationManager {
         StringBuilder documentation = new StringBuilder();
         String sep = MarkdownUtilities.SEPARATOR;
         documentation.append(DOCUMENTATION_HEADER).append(sep);
-        for (Map.Entry<String, List<LccComponent<?>>> entry : ComponentManager.getComponents().entrySet()) {
-            documentation.append("## Category: ").append(entry.getKey()).append(sep);
+        for (Map.Entry<ComponentCategory, List<LccComponent<?>>> entry : ComponentManager.getComponents().entrySet()) {
+            documentation.append("## Category: ").append(entry.getKey().getReadableName()).append(sep);
             documentation.append(entry.getValue().stream().map(LccComponent::generateMarkdownEntry).reduce((s1, s2) -> s1 + sep + s2).orElse("").trim()).append(sep);
         }
         return documentation.toString();

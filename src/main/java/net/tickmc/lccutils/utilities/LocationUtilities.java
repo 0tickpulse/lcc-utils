@@ -7,6 +7,7 @@ import java.util.Set;
 
 /**
  * A set of utilities for working with locations.
+ *
  * @author 0TickPulse
  */
 public class LocationUtilities {

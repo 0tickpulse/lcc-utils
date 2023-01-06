@@ -2,8 +2,10 @@ package net.tickmc.lccutils;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIConfig;
+import net.tickmc.lccutils.components.mythicplaceholders.MythicPlaceholderComponent;
 import net.tickmc.lccutils.events.MythicConditionsEvent;
 import net.tickmc.lccutils.events.MythicMechanicsEvent;
+import net.tickmc.lccutils.events.MythicReloadEvent;
 import net.tickmc.lccutils.managers.ComponentRegisterer;
 import net.tickmc.lccutils.utilities.Debug;
 import org.bukkit.event.Listener;
@@ -12,14 +14,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class LccUtils extends JavaPlugin {
 
-    public boolean debug = true;
+    public static boolean debug = false;
 
     public static LccUtils getPlugin() {
         return getPlugin(LccUtils.class);
     }
+
     public static boolean hasPlugin(String name) {
         return getPlugin().getServer().getPluginManager().getPlugin(name) != null;
     }
+
     public static PluginManager getPluginManager() {
         return getPlugin().getServer().getPluginManager();
     }
@@ -34,7 +38,11 @@ public final class LccUtils extends JavaPlugin {
 
     public void registerEvents() {
         Debug.devLog("Registering events...");
-        registerEvents(new MythicMechanicsEvent(), new MythicConditionsEvent());
+        registerEvents(
+            new MythicMechanicsEvent(),
+            new MythicConditionsEvent(),
+            new MythicReloadEvent()
+        );
     }
 
     public void registerEvents(Listener... listeners) {
@@ -48,6 +56,8 @@ public final class LccUtils extends JavaPlugin {
         CommandAPI.onLoad(new CommandAPIConfig());
         CommandAPI.onEnable(this);
         ComponentRegisterer.register();
+        // registers mythicplaceholders because reload event doesn't fire on server start
+        MythicPlaceholderComponent.registerAll();
         registerEvents();
     }
 

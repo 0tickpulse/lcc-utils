@@ -6,15 +6,18 @@ import io.lumine.mythic.api.skills.conditions.IEntityComparisonCondition;
 import io.lumine.mythic.core.skills.SkillCondition;
 import net.tickmc.lccutils.components.bridges.main.McMMOBridge;
 import net.tickmc.lccutils.components.conditions.ConditionComponent;
+import net.tickmc.lccutils.components.mythicplaceholders.mcmmo.McMMOPartyPlaceholderComponent;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class McMMOSamePartyConditionComponent extends ConditionComponent {
 
     public McMMOSamePartyConditionComponent() {
+        super();
         addNames("sameparty", "samemcmmoparty", "partymatches", "mcmmopartymatches");
         setDescription("Checks if the player is in the same McMMO party as the target.");
-        setAuthor("0TickPulse");
+        addAuthors("0TickPulse");
+        addSeeAlso(McMMOPartyPlaceholderComponent.class);
     }
 
     public static class McMMOSamePartyCondition extends SkillCondition implements IEntityComparisonCondition {

@@ -8,6 +8,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.tickmc.lccutils.LccUtils;
 import net.tickmc.lccutils.components.bridges.BridgeComponent;
+import net.tickmc.lccutils.components.miscellaneous.worldguard.WorldGuardCustomFlagsComponent;
 import net.tickmc.lccutils.components.mythicplaceholders.worldguard.EntityWorldGuardFlagPlaceholderComponent;
 import net.tickmc.lccutils.components.mythicplaceholders.worldguard.LocationWorldGuardFlagPlaceholderComponent;
 import net.tickmc.lccutils.managers.ComponentManager;
@@ -17,6 +18,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 public class WorldGuardBridge extends BridgeComponent {
+
+    public WorldGuardBridge() {
+        super();
+        addNames("WorldGuard");
+        setDescription("Adds several things that hooks into WorldGuard.");
+        addAuthors("0TickPulse");
+    }
+
     @Override
     public void onDisable() {
     }
@@ -28,8 +37,11 @@ public class WorldGuardBridge extends BridgeComponent {
 
     @Override
     public void onLoad() {
-        ComponentManager.registerComponent(new LocationWorldGuardFlagPlaceholderComponent());
-        ComponentManager.registerComponent(new EntityWorldGuardFlagPlaceholderComponent());
+        ComponentManager.registerComponents(
+            new LocationWorldGuardFlagPlaceholderComponent(),
+            new EntityWorldGuardFlagPlaceholderComponent(),
+            new WorldGuardCustomFlagsComponent()
+        );
     }
 
     public static Set<ProtectedRegion> getRegions(Location location) {
@@ -45,7 +57,7 @@ public class WorldGuardBridge extends BridgeComponent {
         return null;
     }
 
-    public static Flag<?> getFlag(String flag) {
+    public static @Nullable Flag<?> getFlagFromString(String flag) {
         return WorldGuard.getInstance().getFlagRegistry().get(flag);
     }
 

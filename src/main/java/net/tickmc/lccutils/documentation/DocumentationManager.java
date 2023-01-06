@@ -20,10 +20,13 @@ public class DocumentationManager {
     public static String generateDocumentation() {
         StringBuilder documentation = new StringBuilder();
         String sep = MarkdownUtilities.SEPARATOR;
+        // header
         documentation.append(DOCUMENTATION_HEADER).append(sep);
         for (Map.Entry<ComponentCategory, List<LccComponent<?>>> entry : ComponentManager.getComponents().entrySet()) {
+            // category
             documentation.append("## Category: ").append(entry.getKey().getReadableName()).append(sep);
-            documentation.append(entry.getValue().stream().map(LccComponent::generateMarkdownEntry).reduce((s1, s2) -> s1 + sep + s2).orElse("").trim()).append(sep);
+            // item
+            documentation.append(entry.getValue().stream().map(LccComponent::generateMarkdownEntry).reduce((s1, s2) -> s1.trim() + sep + s2.trim()).orElse("").trim()).append(sep);
         }
         return documentation.toString();
     }

@@ -74,6 +74,9 @@ public abstract class DocumentationGenerator<T> {
 
         @Override
         public String authors(LccComponent<?> component) {
+            if (component.getAuthors().isEmpty()) {
+                return "";
+            }
             return "Author(s): " + String.join(", ", component.getAuthors());
         }
 
@@ -82,7 +85,7 @@ public abstract class DocumentationGenerator<T> {
             if (component.getSeeAlso().size() == 0) {
                 return "";
             }
-            return MarkdownUtilities.h4 + "See also" + MarkdownUtilities.SEPARATOR + MarkdownUtilities.unorderedList(component.getSeeAlso().stream().map(clazz -> {
+            String[] seeAlso = component.getSeeAlso().stream().map(clazz -> {
                 try {
                     return link(clazz.getConstructor().newInstance());
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
@@ -90,7 +93,11 @@ public abstract class DocumentationGenerator<T> {
                     Debug.error("Failed to instantiate component " + clazz.getName() + " for see also list!");
                     return "";
                 }
-            }).filter(Objects::nonNull).toArray(String[]::new));
+            }).filter(Objects::nonNull).toArray(String[]::new);
+            if (seeAlso.length == 0) {
+                return "";
+            }
+            return MarkdownUtilities.h4 + "See also" + MarkdownUtilities.SEPARATOR + MarkdownUtilities.unorderedList(seeAlso);
         }
 
         @Override

@@ -154,7 +154,7 @@ public class MarkdownUtilities {
      * @param items The items to include in the list.
      */
     public static String unorderedList(String[] items) {
-        return Arrays.stream(items).map(item -> "- " + item + System.lineSeparator()).reduce("", String::concat);
+        return Arrays.stream(items).map(item -> "* " + item).reduce((s, s2) -> s + System.lineSeparator() + s2).orElse("");
     }
 
     /**

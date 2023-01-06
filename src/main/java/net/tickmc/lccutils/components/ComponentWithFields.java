@@ -77,10 +77,13 @@ public abstract class ComponentWithFields extends LccComponent<ComponentWithFiel
 
     @Override
     public String generateMarkdownEntry() {
-        return super.generateMarkdownEntry() + System.lineSeparator() + System.lineSeparator() + this.generateDocsFields();
+        return MarkdownUtilities.join(super.generateMarkdownEntry(), generateDocsFields());
     }
 
     private String generateDocsFields() {
+        if (this.fields.length == 0) {
+            return "";
+        }
         return MarkdownUtilities.h3 + "Fields" + MarkdownUtilities.SEPARATOR +
             MarkdownUtilities.unorderedList(Arrays.stream(this.fields).map(field -> {
                     StringBuilder fieldBuilder = new StringBuilder();

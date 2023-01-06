@@ -1,5 +1,25 @@
 # LccUtils - Auto-Generated Documentation
 
+## Category: Bridge
+
+### Bridge: `McMMO`
+
+LCCUtils has compatibility with McMMO. This bridge enables certain things like the [Mythic Placeholder: `[caster/target/trigger/parent].mcmmo.party`](#mythic-placeholder-castertargettriggerparentmcmmoparty).
+
+Author(s): 0TickPulse
+
+### Bridge: `WorldGuard`
+
+Adds several things that hooks into WorldGuard.
+
+Author(s): 0TickPulse
+
+### Bridge: `PlaceholderAPI`
+
+This plugin adds a 'mythic' placeholder to PlaceholderAPI.
+
+Author(s): 0TickPulse
+
 ## Category: Mythic Mechanic
 
 ### Mythic Mechanic: `slash`
@@ -17,11 +37,11 @@ However, if you want more lenient targeting, you can use the `@EntitiesInCone` t
 ```yaml
 SlashTest:
   Skills:
-    - slash{onpointskill=SlashTestTick;points=80;r=5;rot=<random.1to180>} @forward{f=0;uel=true}
+  - slash{onpointskill=SlashTestTick;points=80;r=5;rot=<random.1to180>} @forward{f=0;uel=true}
 
 SlashTestTick:
   Skills:
-    - e:p{p=flame} @Origin
+  - e:p{p=flame} @Origin
 ```
 
 Author(s): 0TickPulse
@@ -67,6 +87,14 @@ Author(s): 0TickPulse
 * `verticalHitRadius`, `vhr`, `vr` - Each point in the slash checks for entities within a certain radius to determine if the entity was hit. This is the vertical radius of each point.
   Default value: `(The hitRadius field)`
 
+## Category: PAPI Placeholder
+
+### PAPI Placeholder: `mythic`
+
+Parses a mythic expression and return the result. To get the player, use 'caster'.
+
+Author(s): 0TickPulse
+
 ## Category: Mythic Placeholder
 
 ### Mythic Placeholder: `[caster/target/trigger/parent].standing_on`
@@ -103,26 +131,6 @@ Returns the value of the specified WorldGuard flag at the target entity's locati
 
 Author(s): 0TickPulse
 
-## Category: Bridge
-
-### Bridge: `McMMO`
-
-LCCUtils has compatibility with McMMO. This bridge enables certain things like the [Mythic Placeholder: `[caster/target/trigger/parent].mcmmo.party`](#mythic-placeholder-castertargettriggerparentmcmmoparty).
-
-Author(s): 0TickPulse
-
-### Bridge: `WorldGuard`
-
-Adds several things that hooks into WorldGuard.
-
-Author(s): 0TickPulse
-
-### Bridge: `PlaceholderAPI`
-
-This plugin adds a 'mythic' placeholder to PlaceholderAPI.
-
-Author(s): 0TickPulse
-
 ## Category: Minecraft Command
 
 ### Minecraft Command: `mmrun`
@@ -144,14 +152,6 @@ The main command for LccUtils.
 ```yaml
 /lccutils component command slash
 ```
-
-Author(s): 0TickPulse
-
-## Category: PAPI Placeholder
-
-### PAPI Placeholder: `mythic`
-
-Parses a mythic expression and return the result. To get the player, use 'caster'.
 
 Author(s): 0TickPulse
 
@@ -181,8 +181,6 @@ Checks if the player is in the same McMMO party as the target.
 * [Mythic Placeholder: `[caster/target/trigger/parent].mcmmo.party`](#mythic-placeholder-castertargettriggerparentmcmmoparty)
 
 Author(s): 0TickPulse
-
-### Fields
 
 ## Category: Miscellaneous
 

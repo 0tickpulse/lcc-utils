@@ -16,7 +16,7 @@ jobs:
                     fi
 
     build:
-        if: ${{ needs.check-version.result == "success" }}
+        if: ${{ needs.check-version.result == 'success' }}
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout

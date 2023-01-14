@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public class ComponentUtilities {
     public static Component hline = Component.text(" ".repeat(80)).color(TextColor.color(0x232323)).decorate(TextDecoration.STRIKETHROUGH);
@@ -16,6 +17,26 @@ public class ComponentUtilities {
             }
         }
         return component;
+    }
+
+    public static Component formatTitle(String title) {
+        return formatTitle(title, true);
+    }
+
+    public static Component formatTitle(String title, boolean bold) {
+        return parseMiniMessage(title).decoration(TextDecoration.BOLD, bold ? TextDecoration.State.TRUE : TextDecoration.State.FALSE).color(TextColor.color(0x0080FF));
+    }
+
+    public static Component formatUnimportant(String body) {
+        return parseMiniMessage(body).color(TextColor.color(0x6E6E6E));
+    }
+
+    public static Component formatBody(String body) {
+        return parseMiniMessage(body).color(TextColor.color(0xC1C1C1));
+    }
+
+    public static Component parseMiniMessage(String minimessage) {
+        return MiniMessage.miniMessage().deserialize(minimessage);
     }
 
     public static Component joinComponentsAndCompress(Component... components) {

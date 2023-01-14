@@ -1,5 +1,7 @@
 package net.tickmc.lccutils.utilities;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -97,5 +99,14 @@ public class GeneralUtilities {
             }
         }
         return builder.toString();
+    }
+
+    /**
+     * Parses a JSON string.
+     *
+     * @param json The JSON string to parse.
+     */
+    public static JsonObject parseJson(String json) {
+        return JsonParser.parseString(json).getAsJsonObject();
     }
 }

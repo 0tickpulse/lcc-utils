@@ -8,7 +8,7 @@ public class LocationWorldGuardFlagPlaceholderComponent extends LocationMythicPl
 
     public LocationWorldGuardFlagPlaceholderComponent() {
         super();
-        addNames("worldguard.flag.<flag>");
+        addNames("worldguard.flag");
         setDescription("Returns the value of the specified WorldGuard flag at the target location.");
         addAuthors("0TickPulse");
     }

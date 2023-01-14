@@ -66,7 +66,7 @@ public class Debug {
     }
 
     public static void devLog(String message) {
-        if (LccUtils.getPlugin().debug) {
+        if (LccUtils.debug) {
             LccUtils.getPlugin().getLogger().log(
                 Level.INFO,
                 foregroundColor(new Color(0x00FF00))

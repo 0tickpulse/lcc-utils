@@ -55,7 +55,7 @@ import java.util.List;
  *
  * @author 0TickPulse
  */
-public abstract class TransformableMechanic extends SkillMechanic implements ITargetedLocationSkill, ITargetedEntitySkill {
+public abstract class TransformableLocationsMechanic extends SkillMechanic implements ITargetedLocationSkill, ITargetedEntitySkill {
 
     /**
      * A list of fields that can be used via {@link ComponentWithFields#addFields(ComponentWithFields.ComponentField...)}
@@ -84,7 +84,7 @@ public abstract class TransformableMechanic extends SkillMechanic implements ITa
     protected final boolean radians;
     protected final boolean inferDirection;
 
-    public TransformableMechanic(SkillExecutor manager, File file, String line, MythicLineConfig mlc) {
+    public TransformableLocationsMechanic(SkillExecutor manager, File file, String line, MythicLineConfig mlc) {
         super(manager, file, line, mlc);
         this.xOffset = mlc.getPlaceholderDouble(new String[]{"xoffset", "xo", "ox", "xoff"}, 0);
         this.yOffset = mlc.getPlaceholderDouble(new String[]{"yoffset", "yo", "oy", "yoff"}, 0);
@@ -151,7 +151,7 @@ public abstract class TransformableMechanic extends SkillMechanic implements ITa
     /**
      * This method should return a list of locations based on the targeted location.
      *
-     * @param skillMetadata The metadata of the skill.
+     * @param skillMetadata  The metadata of the skill.
      * @param target        The targeted location.
      */
     public abstract List<Location> getPoints(SkillMetadata skillMetadata, Location target);

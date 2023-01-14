@@ -147,21 +147,21 @@ public abstract class DocumentationGenerator<T> {
 
         @Override
         public Component title(LccComponent<?> component) {
-            return Component.text(component.getCategory().getReadableName() + ": " + component.getName()).color(TextColor.color(0x0080FF));
+            return ComponentUtilities.formatTitle(component.getCategory().getReadableName() + ": " + component.getName());
         }
 
         @Override
         public Component aliases(LccComponent<?> component) {
             String[] aliases = component.getAliases();
             if (aliases.length > 0) {
-                return Component.text("Aliases: " + Arrays.stream(aliases).reduce((s, s2) -> s + ", " + s2).orElse("")).color(TextColor.color(0x6E6E6E));
+                return ComponentUtilities.formatUnimportant("Aliases: " + Arrays.stream(aliases).reduce((s, s2) -> s + ", " + s2).orElse(""));
             }
             return null;
         }
 
         @Override
         public Component description(LccComponent<?> component) {
-            return Component.text(component.getDescription()).color(TextColor.color(0xC1C1C1));
+            return ComponentUtilities.formatBody(component.getDescription());
         }
 
         @Override
@@ -169,7 +169,7 @@ public abstract class DocumentationGenerator<T> {
             if (component.getExamples().size() == 0) {
                 return null;
             }
-            TextComponent textComponent = Component.text("Examples").decoration(TextDecoration.BOLD, TextDecoration.State.TRUE).color(TextColor.color(0x0080FF)).append(Component.newline()).append(Component.newline());
+            TextComponent textComponent = (TextComponent) ComponentUtilities.formatTitle("Examples").append(Component.newline()).append(Component.newline());
             Optional<TextComponent> exampleText = component.getExamples().stream().map(s ->
                 Component.text(s).decoration(TextDecoration.BOLD, TextDecoration.State.FALSE).color(TextColor.color(0x87BBBB))
             ).reduce((s, s2) -> s.append(Component.newline()).append(Component.newline()).append(s2));
@@ -179,7 +179,7 @@ public abstract class DocumentationGenerator<T> {
         @Override
         public Component authors(LccComponent<?> component) {
             return Component.text("Author: ").color(TextColor.color(0x6E6E6E))
-                .append(Component.text(String.join(", ", component.getAuthors())).color(TextColor.color(0x0080FF)));
+                .append(ComponentUtilities.formatTitle(String.join(", ", component.getAuthors()), false));
         }
 
         @Override
@@ -187,7 +187,7 @@ public abstract class DocumentationGenerator<T> {
             if (component.getSeeAlso().size() == 0) {
                 return null;
             }
-            TextComponent textComponent = Component.text("See also").decoration(TextDecoration.BOLD, TextDecoration.State.TRUE).color(TextColor.color(0x0080FF)).append(Component.newline()).append(Component.newline());
+            TextComponent textComponent = (TextComponent) ComponentUtilities.formatTitle("See also:").append(Component.newline()).append(Component.newline());
             Optional<Component> seeAlsoText = component.getSeeAlso().stream().map(
                     clazz -> {
                         try {

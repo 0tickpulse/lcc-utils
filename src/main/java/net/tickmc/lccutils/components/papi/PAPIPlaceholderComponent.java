@@ -43,7 +43,7 @@ public abstract class PAPIPlaceholderComponent extends LccComponent<PAPIPlacehol
 
             @Override
             public @NotNull String getVersion() {
-                return LccUtils.getVersion();
+                return LccUtils.getVersion().toString();
             }
 
             @Override

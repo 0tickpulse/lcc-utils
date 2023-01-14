@@ -7,6 +7,7 @@ import net.tickmc.lccutils.events.MythicConditionsEvent;
 import net.tickmc.lccutils.events.MythicMechanicsEvent;
 import net.tickmc.lccutils.events.MythicReloadEvent;
 import net.tickmc.lccutils.managers.ComponentRegisterer;
+import net.tickmc.lccutils.managers.updates.Version;
 import net.tickmc.lccutils.utilities.Debug;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
@@ -32,8 +33,8 @@ public final class LccUtils extends JavaPlugin {
         return getPlugin().getName();
     }
 
-    public static String getVersion() {
-        return getPlugin().getDescription().getVersion();
+    public static Version getVersion() {
+        return new Version(getPlugin().getDescription().getVersion());
     }
 
     public void registerEvents() {

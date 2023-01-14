@@ -10,7 +10,7 @@ import io.lumine.mythic.bukkit.utils.Schedulers;
 import io.lumine.mythic.core.logging.MythicLogger;
 import io.lumine.mythic.core.skills.SkillExecutor;
 import net.tickmc.lccutils.components.mechanics.MechanicComponent;
-import net.tickmc.lccutils.components.mechanics.TransformableMechanic;
+import net.tickmc.lccutils.components.mechanics.TransformableLocationsMechanic;
 import net.tickmc.lccutils.utilities.SlashUtilities;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -33,7 +33,7 @@ public class SlashMechanicComponent extends MechanicComponent {
             This mechanic also provides entity targeting and allows you to specify actions performed on targeted entities through the `onhitskill` field.
             However, if you want more lenient targeting, you can use the `@EntitiesInCone` targeter provided by Mythic.""");
         addAuthors("0TickPulse");
-        addFields(TransformableMechanic.FIELDS);
+        addFields(TransformableLocationsMechanic.FIELDS);
         addFields(new ComponentField().addNames("onpointskill", "onpoint", "op").setDescription("The skill to perform for every point in the slash."),
             new ComponentField().addNames("onhitskill", "onhit", "oh").setDescription("The skill to perform for every entity hit by the slash."),
             new ComponentField().addNames("radius", "r").setDescription("The radius of the slash.").setDefaultValue("2"),
@@ -54,7 +54,7 @@ public class SlashMechanicComponent extends MechanicComponent {
               - e:p{p=flame} @Origin""");
     }
 
-    public static class SlashMechanic extends TransformableMechanic implements ITargetedLocationSkill, ITargetedEntitySkill {
+    public static class SlashMechanic extends TransformableLocationsMechanic implements ITargetedLocationSkill, ITargetedEntitySkill {
 
         private final PlaceholderString onPointSkillName;
         private final PlaceholderString onHitSkillName;

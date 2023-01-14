@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.tick-mc</groupId>
+    <groupId>net.tickmc</groupId>
     <artifactId>lcc-utils</artifactId>
-    <version>2.1.1-SNAPSHOT</version>
+    <!-- VERSION_INCREMENT --> <version>2.1.2-SNAPSHOT-1</version>
     <packaging>jar</packaging>
 
     <name>Lcc Utils</name>
@@ -46,6 +46,7 @@
                     <artifactSet>
                         <includes>
                             <include>dev.jorel</include>
+                            <include>net.kyori</include>
                         </includes>
                     </artifactSet>
                     <filters>
@@ -66,7 +67,11 @@
                     <relocations>
                         <relocation>
                             <pattern>dev.jorel.commandapi</pattern>
-                            <shadedPattern>net.tickmc.shaded.commandapi</shadedPattern>
+                            <shadedPattern>net.shaded.jorel.commandapi</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>net.kyori</pattern>
+                            <shadedPattern>net.shaded.kyori</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -103,7 +108,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.18.1-R0.1-SNAPSHOT</version>
+            <version>1.19.3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

@@ -15,8 +15,6 @@ jobs:
                     exit 1
                     fi
 
-    get-version-data:
-
     build:
         if: ${{ needs.check-version.result == "success" }}
         runs-on: ubuntu-latest

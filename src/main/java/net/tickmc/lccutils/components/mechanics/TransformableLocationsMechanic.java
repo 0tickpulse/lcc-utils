@@ -16,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,7 +61,7 @@ public abstract class TransformableLocationsMechanic extends UtilFieldsMechanic 
     /**
      * A list of fields that can be used via {@link ComponentWithFields#addFields(ComponentWithFields.ComponentField...)}
      */
-    public static List<ComponentWithFields.ComponentField> FIELDS = Arrays.asList(
+    public static List<ComponentWithFields.ComponentField> FIELDS = new ArrayList<>(Arrays.asList(
         new ComponentWithFields.ComponentField().addNames("xoffset", "xo", "ox", "xoff").setMarkdownDescription("Additional offset in the X-axis.").setDefaultValue("0"),
         new ComponentWithFields.ComponentField().addNames("yoffset", "yo", "oy", "yoff").setMarkdownDescription("Additional offset in the Y-axis.").setDefaultValue("0"),
         new ComponentWithFields.ComponentField().addNames("zoffset", "zo", "oz", "zoff").setMarkdownDescription("Additional offset in the Z-axis.").setDefaultValue("0"),
@@ -71,7 +72,7 @@ public abstract class TransformableLocationsMechanic extends UtilFieldsMechanic 
         new ComponentWithFields.ComponentField().addNames("rotation", "rot").setMarkdownDescription("The rotation of the slash in degrees.").setDefaultValue("0"),
         new ComponentWithFields.ComponentField().addNames("radians", "rad", "useradians", "ur").setMarkdownDescription("Whether to use radians instead of degrees for the rotation.").setDefaultValue("false"),
         new ComponentWithFields.ComponentField().addNames("inferdirection", "inferdir", "id").setMarkdownDescription("If set to true, instead of getting the direction from the target location, it gets the direction of an arbitrary vector from the caster to the target location.").setDefaultValue("false")
-    );
+    ));
 
     static {
         FIELDS.addAll(UtilFieldsMechanic.FIELDS);
@@ -126,25 +127,35 @@ public abstract class TransformableLocationsMechanic extends UtilFieldsMechanic 
         float averagePitch = locations.stream().map(Location::getPitch).reduce(0.0F, Float::sum) / locations.size();
         Location center = new Location(locations.get(0).getWorld(), averageX, averageY, averageZ, averageYaw, averagePitch);
         Location casterLocation = BukkitAdapter.adapt(skillMetadata.getCaster().getLocation());
+
+        double finalXOffset = xOffset.get(skillMetadata);
+        double finalYOffset = yOffset.get(skillMetadata);
+        double finalZOffset = zOffset.get(skillMetadata);
+        double finalForwardOffset = forwardOffset.get(skillMetadata);
+        double finalRightOffset = rightOffset.get(skillMetadata);
+        double finalVerticalOffset = verticalOffset.get(skillMetadata);
+        double finalScale = scale.get(skillMetadata);
+        double finalRotation = rotation.get(skillMetadata);
+
         return locations.stream().map(location -> {
             // add offsets
-            location.add(xOffset.get(skillMetadata), yOffset.get(skillMetadata), zOffset.get(skillMetadata));
+            location.add(finalXOffset, finalYOffset, finalZOffset);
             // add relative offsets
             location = LocationUtilities.relativeOffset(
                 location.clone().setDirection(
                     casterLocation.getDirection()
                 ),
-                forwardOffset.get(skillMetadata),
-                rightOffset.get(skillMetadata),
-                verticalOffset.get(skillMetadata)
+                finalForwardOffset,
+                finalRightOffset,
+                finalVerticalOffset
             );
             // rotations
             Vector casterToTarget = location.toVector().subtract(casterLocation.toVector());
-            casterToTarget = casterToTarget.rotateAroundAxis(casterLocation.getDirection().normalize(), toRadians(rotation.get(skillMetadata)));
+            casterToTarget = casterToTarget.rotateAroundAxis(casterLocation.getDirection().normalize(), toRadians(finalRotation));
             location = casterLocation.clone().add(casterToTarget);
             // size transformation
             Vector vector = location.clone().subtract(center).toVector();
-            Location finalLocation = center.clone().add(vector.multiply(scale.get(skillMetadata)));
+            Location finalLocation = center.clone().add(vector.multiply(finalScale));
             if (inferDirection) {
                 finalLocation.setDirection(casterToTarget);
             }
@@ -155,7 +166,7 @@ public abstract class TransformableLocationsMechanic extends UtilFieldsMechanic 
     /**
      * This method should return a list of locations based on the targeted location.
      *
-     * @param skillMetadata  The metadata of the skill.
+     * @param skillMetadata The metadata of the skill.
      * @param target        The targeted location.
      */
     public abstract List<Location> getPoints(SkillMetadata skillMetadata, Location target);

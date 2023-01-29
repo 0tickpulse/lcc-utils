@@ -33,7 +33,9 @@ public class SlashMechanicComponent extends MechanicComponent {
             This mechanic also provides entity targeting and allows you to specify actions performed on targeted entities through the `onhitskill` field.
             However, if you want more lenient targeting, you can use the `@EntitiesInCone` targeter provided by Mythic.""");
         addAuthors("0TickPulse");
-        addFields(TransformableLocationsMechanic.FIELDS);
+        for (ComponentField field : TransformableLocationsMechanic.FIELDS) {
+            addFields(field);
+        }
         addFields(new ComponentField().addNames("onpointskill", "onpoint", "op").setDescription("The skill to perform for every point in the slash."),
             new ComponentField().addNames("onhitskill", "onhit", "oh").setDescription("The skill to perform for every entity hit by the slash."),
             new ComponentField().addNames("radius", "r").setDescription("The radius of the slash.").setDefaultValue("2"),
@@ -72,29 +74,29 @@ public class SlashMechanicComponent extends MechanicComponent {
         public SlashMechanic(SkillExecutor manager, File file, String line, MythicLineConfig mlc) {
             super(manager, file, line, mlc);
 
-            this.onPointSkillName = mlc.getPlaceholderString(new String[]{"onpointskill", "onpoint", "op"}, "");
-            this.onHitSkillName = mlc.getPlaceholderString(new String[]{"onhitskill", "onhit", "oh"}, "");
+            onPointSkillName = mlc.getPlaceholderString(new String[]{"onpointskill", "onpoint", "op"}, "");
+            onHitSkillName = mlc.getPlaceholderString(new String[]{"onhitskill", "onhit", "oh"}, "");
 
-            this.radius = mlc.getPlaceholderDouble(new String[]{"radius", "r"}, "2");
-            this.points = mlc.getPlaceholderInteger(new String[]{"points", "p"}, "5");
+            radius = mlc.getPlaceholderDouble(new String[]{"radius", "r"}, "2");
+            points = mlc.getPlaceholderInteger(new String[]{"points", "p"}, "5");
 
-            this.arc = mlc.getPlaceholderDouble(new String[]{"arc", "a"}, "180");
+            arc = mlc.getPlaceholderDouble(new String[]{"arc", "a"}, "180");
 
-            this.iterationInterval = mlc.getPlaceholderInteger(new String[]{"interval", "i"}, "1");
-            this.iterationCount = mlc.getPlaceholderInteger(new String[]{"iterationCount", "count", "ic", "c"}, "1");
+            iterationInterval = mlc.getPlaceholderInteger(new String[]{"interval", "i"}, "1");
+            iterationCount = mlc.getPlaceholderInteger(new String[]{"iterationCount", "count", "ic", "c"}, "1");
 
-            this.lineDistance = mlc.getPlaceholderDouble(new String[]{"lineDistance", "ld"}, "0.2");
-            this.hitRadius = mlc.getPlaceholderDouble(new String[]{"hitRadius", "hr"}, "0.2");
-            this.verticalHitRadius = mlc.getPlaceholderDouble(new String[]{"verticalHitRadius", "vhr", "vr"}, this.hitRadius);
+            lineDistance = mlc.getPlaceholderDouble(new String[]{"lineDistance", "ld"}, "0.2");
+            hitRadius = mlc.getPlaceholderDouble(new String[]{"hitRadius", "hr"}, "0.2");
+            verticalHitRadius = mlc.getPlaceholderDouble(new String[]{"verticalHitRadius", "vhr", "vr"}, hitRadius);
 
-            this.getManager().queueSecondPass(() -> {
-                this.onPointSkill = this.getManager().getSkill(this.onPointSkillName.get());
-                if (this.onPointSkill.isEmpty() && !this.onPointSkillName.get().equals("")) {
-                    MythicLogger.error("Could not find onPointSkill " + this.onPointSkillName.get());
+            getManager().queueSecondPass(() -> {
+                onPointSkill = getManager().getSkill(onPointSkillName.get());
+                if (onPointSkill.isEmpty() && !onPointSkillName.get().equals("")) {
+                    MythicLogger.error("Could not find onPointSkill " + onPointSkillName.get());
                 }
-                this.onHitSkill = this.getManager().getSkill(this.onHitSkillName.get());
-                if (this.onHitSkill.isEmpty() && !this.onHitSkillName.get().equals("")) {
-                    MythicLogger.error("Could not find onHitSkill " + this.onHitSkillName.get());
+                onHitSkill = getManager().getSkill(onHitSkillName.get());
+                if (onHitSkill.isEmpty() && !onHitSkillName.get().equals("")) {
+                    MythicLogger.error("Could not find onHitSkill " + onHitSkillName.get());
                 }
             });
         }
@@ -103,10 +105,10 @@ public class SlashMechanicComponent extends MechanicComponent {
         public List<Location> getPoints(SkillMetadata skillMetadata, Location target) throws IllegalArgumentException {
             return SlashUtilities.getSlashLocations(
                 target,
-                this.radius.get(skillMetadata),
-                this.rotation.get(skillMetadata),
-                this.points.get(skillMetadata),
-                this.arc.get(skillMetadata)
+                radius.get(skillMetadata),
+                rotation.get(skillMetadata),
+                points.get(skillMetadata),
+                arc.get(skillMetadata)
             );
         }
 
@@ -114,17 +116,17 @@ public class SlashMechanicComponent extends MechanicComponent {
         public SkillResult cast(SkillMetadata skillMetadata, List<Location> locations) {
             int i = 0;
             for (Location point : locations) {
-                int interval = this.iterationInterval.get(skillMetadata);
-                int count = this.iterationCount.get(skillMetadata);
+                int interval = iterationInterval.get(skillMetadata);
+                int count = iterationCount.get(skillMetadata);
                 // get delay based on iteration count and interval
                 int currentIteration = i / count + 1;
                 int delay = interval * currentIteration;
                 SkillMetadata pointData = skillMetadata.deepClone();
                 pointData.setOrigin(BukkitAdapter.adapt(point));
-                this.onPointSkill.ifPresent(skill -> Schedulers.sync().runLater(() -> skill.execute(pointData), delay));
+                onPointSkill.ifPresent(skill -> Schedulers.sync().runLater(() -> skill.execute(pointData), delay));
                 i++;
             }
-            Set<Entity> entities = SlashUtilities.getEntitiesInPoints(BukkitAdapter.adapt(skillMetadata.getCaster().getLocation()), new HashSet<>(locations), this.hitRadius.get(), this.verticalHitRadius.get(), this.lineDistance.get());
+            Set<Entity> entities = SlashUtilities.getEntitiesInPoints(BukkitAdapter.adapt(skillMetadata.getCaster().getLocation()), new HashSet<>(locations), hitRadius.get(skillMetadata), verticalHitRadius.get(skillMetadata), lineDistance.get(skillMetadata));
             for (Entity entity : entities) {
                 if (entity.equals(skillMetadata.getCaster().getEntity().getBukkitEntity())) {
                     continue;
@@ -132,7 +134,7 @@ public class SlashMechanicComponent extends MechanicComponent {
                 SkillMetadata hitData = skillMetadata.deepClone();
                 hitData.setOrigin(BukkitAdapter.adapt(entity.getLocation()));
                 hitData.setEntityTarget(BukkitAdapter.adapt(entity));
-                this.onHitSkill.ifPresent(skill -> skill.execute(hitData));
+                onHitSkill.ifPresent(skill -> skill.execute(hitData));
             }
             return SkillResult.SUCCESS;
         }

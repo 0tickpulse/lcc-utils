@@ -20,16 +20,27 @@ public abstract class LccComponent<T extends LccComponent<?>> {
     /**
      * The names of the component.
      * This will be displayed in the {@code /components} command, the documentation, and more.
-     * Keep in mind that in some places, the first element of this array will be used as the main title,
+     * Keep in mind that in some places, the first element of this set will be used as the main title,
      * and the rest will be used as aliases.
+     *
+     * @apiNote Should be ordered.
      */
     private @NotNull Set<String> names = new LinkedHashSet<>();
     /**
-     * A short description of the component.
-     * This will be displayed in the {@code /components} command, the documentation, and more.
+     * A short description of the component to be displayed in Markdown.
+     * This will be displayed in the documentation, and more.
      * It should display information on what the component does, and any other important information.
      */
-    private String description = "";
+    private String markdownDescription = "";
+    /**
+     * A short description of the component to be displayed in Minecraft.
+     * This will be displayed in the {@code /components} command, and more.
+     * It should display information on what the component does, and any other important information.
+     *
+     * @apiNote Methods that use this field should support MiniMessage.
+     */
+    private String minecraftDescription = "";
+
     /**
      * The author of the component. You should write your title here.
      * This will be displayed in the {@code /components} command, the documentation, and more.
@@ -87,22 +98,55 @@ public abstract class LccComponent<T extends LccComponent<?>> {
     }
 
     /**
-     * Gets the description of the component.
+     * Gets the Markdown description of the component.
      *
-     * @see #description
+     * @see #markdownDescription
      */
-    public String getDescription() {
-        return description;
+    public String getMarkdownDescription() {
+        return markdownDescription;
     }
 
     /**
-     * Sets the description of the component.
+     * Sets the Markdown description of the component.
+     *
+     * @param markdownDescription The description to set.
+     * @see #markdownDescription
+     */
+    public T setMarkdownDescription(String markdownDescription) {
+        this.markdownDescription = markdownDescription;
+        return (T) this;
+    }
+
+    /**
+     * Gets the Minecraft description of the component.
+     *
+     * @see #minecraftDescription
+     */
+    public String getMinecraftDescription() {
+        return minecraftDescription;
+    }
+
+    /**
+     * Sets the Minecraft description of the component.
+     *
+     * @param minecraftDescription The description to set.
+     * @see #minecraftDescription
+     */
+    public T setMinecraftDescription(String minecraftDescription) {
+        this.minecraftDescription = minecraftDescription;
+        return (T) this;
+    }
+
+    /**
+     * Sets both the Minecraft and Markdown descriptions of the component.
      *
      * @param description The description to set.
-     * @see #description
+     * @see #minecraftDescription
+     * @see #markdownDescription
      */
     public T setDescription(String description) {
-        this.description = description;
+        this.minecraftDescription = description;
+        this.markdownDescription = description;
         return (T) this;
     }
 
@@ -277,10 +321,10 @@ public abstract class LccComponent<T extends LccComponent<?>> {
     public abstract void onDisable();
 
     public String generateMarkdownEntry() {
-        return DocumentationGenerator.MarkdownDocumentationGenerator.getInstance().generate(this);
+        return DocumentationGenerator.Markdown.getInstance().generate(this);
     }
 
     public Component generateMinecraftEntry() {
-        return DocumentationGenerator.MinecraftDocumentationGenerator.getInstance().generate(this);
+        return DocumentationGenerator.Minecraft.getInstance().generate(this);
     }
 }

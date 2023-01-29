@@ -46,7 +46,6 @@
                     <artifactSet>
                         <includes>
                             <include>dev.jorel</include>
-                            <include>net.kyori</include>
                         </includes>
                     </artifactSet>
                     <filters>
@@ -69,10 +68,6 @@
                             <pattern>dev.jorel.commandapi</pattern>
                             <shadedPattern>net.shaded.jorel.commandapi</shadedPattern>
                         </relocation>
-                        <relocation>
-                            <pattern>net.kyori</pattern>
-                            <shadedPattern>net.shaded.kyori</shadedPattern>
-                        </relocation>
                     </relocations>
                 </configuration>
             </plugin>
@@ -86,10 +81,12 @@
     </build>
 
     <repositories>
+        <!-- MythicMobs -->
         <repository>
             <id>mythic</id>
             <url>https://mvn.lumine.io/repository/maven-public/</url>
         </repository>
+        <!-- PaperMC -->
         <repository>
             <id>papermc-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
@@ -98,6 +95,8 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <!-- MiniMessage -->
+        <!-- PlaceholderAPI -->
         <repository>
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
@@ -108,7 +107,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.19.3-R0.1-SNAPSHOT</version>
+            <version>1.18.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

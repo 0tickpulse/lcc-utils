@@ -19,18 +19,22 @@ import java.util.Optional;
 
 public abstract class DocumentationGenerator<T> {
 
-    public static class MarkdownDocumentationGenerator extends DocumentationGenerator<String> {
+    public static String linkMarkdown(LccComponent<?> component) {
+        return Markdown.getInstance().link(component);
+    }
 
-        private static MarkdownDocumentationGenerator instance;
+    public static class Markdown extends DocumentationGenerator<String> {
 
-        public static MarkdownDocumentationGenerator getInstance() {
+        private static Markdown instance;
+
+        public static Markdown getInstance() {
             if (instance == null) {
-                instance = new MarkdownDocumentationGenerator();
+                instance = new Markdown();
             }
             return instance;
         }
 
-        private MarkdownDocumentationGenerator() {
+        private Markdown() {
         }
 
         @Override
@@ -45,9 +49,13 @@ public abstract class DocumentationGenerator<T> {
             );
         }
 
+        public String typeAndName(LccComponent<?> component) {
+            return component.getCategory().getReadableName() + ": `" + component.getName() + "`";
+        }
+
         @Override
         public String title(LccComponent<?> component) {
-            return MarkdownUtilities.h3 + component.getCategory().getReadableName() + ": `" + component.getName() + "`";
+            return MarkdownUtilities.h3 + typeAndName(component);
         }
 
         @Override
@@ -61,7 +69,7 @@ public abstract class DocumentationGenerator<T> {
 
         @Override
         public String description(LccComponent<?> component) {
-            return component.getDescription();
+            return component.getMarkdownDescription();
         }
 
         @Override
@@ -102,23 +110,23 @@ public abstract class DocumentationGenerator<T> {
 
         @Override
         public String link(LccComponent<?> component) {
-            String title = title(component).replaceFirst(MarkdownUtilities.h3, "");
+            String title = typeAndName(component);
             return MarkdownUtilities.link(title, "#" + GeneralUtilities.trimToCharacterSet(title.toLowerCase().replace(' ', '-'), "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789_-#"));
         }
     }
 
-    public static class MinecraftDocumentationGenerator extends DocumentationGenerator<Component> {
+    public static class Minecraft extends DocumentationGenerator<Component> {
 
-        private static MinecraftDocumentationGenerator instance;
+        private static Minecraft instance;
 
-        public static MinecraftDocumentationGenerator getInstance() {
+        public static Minecraft getInstance() {
             if (instance == null) {
-                instance = new MinecraftDocumentationGenerator();
+                instance = new Minecraft();
             }
             return instance;
         }
 
-        private MinecraftDocumentationGenerator() {
+        private Minecraft() {
         }
 
         @Override
@@ -161,7 +169,7 @@ public abstract class DocumentationGenerator<T> {
 
         @Override
         public Component description(LccComponent<?> component) {
-            return ComponentUtilities.formatBody(component.getDescription());
+            return ComponentUtilities.formatBody(component.getMarkdownDescription());
         }
 
         @Override
@@ -210,10 +218,10 @@ public abstract class DocumentationGenerator<T> {
 
         @Override
         public Component link(LccComponent<?> component) {
-            Component title = MinecraftDocumentationGenerator.getInstance().title(component);
+            Component title = Minecraft.getInstance().title(component);
             return title
                 .color(TextColor.color(0x87BBBB))
-                .hoverEvent(HoverEvent.showText(Component.text(GeneralUtilities.overflow(component.getDescription(), 350))))
+                .hoverEvent(HoverEvent.showText(Component.text(GeneralUtilities.overflow(component.getMarkdownDescription(), 350))))
                 .clickEvent(ClickEvent.suggestCommand("/lccutils component " + component.getCategory().getSimpleReadableName() + " " + component.getName().replace(" ", "_")));
         }
     }

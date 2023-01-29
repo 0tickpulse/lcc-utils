@@ -10,13 +10,13 @@ import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.api.skills.placeholders.PlaceholderDouble;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.core.skills.SkillExecutor;
-import io.lumine.mythic.core.skills.SkillMechanic;
 import net.tickmc.lccutils.components.ComponentWithFields;
 import net.tickmc.lccutils.utilities.LocationUtilities;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -55,23 +55,27 @@ import java.util.List;
  *
  * @author 0TickPulse
  */
-public abstract class TransformableLocationsMechanic extends SkillMechanic implements ITargetedLocationSkill, ITargetedEntitySkill {
+public abstract class TransformableLocationsMechanic extends UtilFieldsMechanic implements ITargetedLocationSkill, ITargetedEntitySkill {
 
     /**
      * A list of fields that can be used via {@link ComponentWithFields#addFields(ComponentWithFields.ComponentField...)}
      */
-    public static ComponentWithFields.ComponentField[] FIELDS = {
-        new ComponentWithFields.ComponentField().addNames("xoffset", "xo", "ox", "xoff").setDescription("Additional offset in the X-axis.").setDefaultValue("0"),
-        new ComponentWithFields.ComponentField().addNames("yoffset", "yo", "oy", "yoff").setDescription("Additional offset in the Y-axis.").setDefaultValue("0"),
-        new ComponentWithFields.ComponentField().addNames("zoffset", "zo", "oz", "zoff").setDescription("Additional offset in the Z-axis.").setDefaultValue("0"),
-        new ComponentWithFields.ComponentField().addNames("forwardoffset", "fo", "of", "foff").setDescription("Additional forward offset. This is based on the caster's yaw and pitch.").setDefaultValue("0"),
-        new ComponentWithFields.ComponentField().addNames("rightoffset", "ro", "or", "roff").setDescription("Additional right offset. This is based on the caster's yaw and pitch. This is equivalent to `forwardoffset` but with pitch set to 0 and yaw rotated by -90.").setDefaultValue("0"),
-        new ComponentWithFields.ComponentField().addNames("verticalOffset", "vo", "ov", "voff").setDescription("Additional vertical offset. This is based on the caster's yaw and pitch. This is equivalent to `forwardoffset` but with pitch rotated by +90.").setDefaultValue("0"),
-        new ComponentWithFields.ComponentField().addNames("scale").setDescription("This mechanic takes the points and calculates a center point. Then, for each of the points, it calculates a vector from the center to that point. The size field simply multiplies this vector.").setDefaultValue("1"),
-        new ComponentWithFields.ComponentField().addNames("rotation", "rot").setDescription("The rotation of the slash in degrees.").setDefaultValue("0"),
-        new ComponentWithFields.ComponentField().addNames("radians", "rad", "useradians", "ur").setDescription("Whether to use radians instead of degrees for the rotation.").setDefaultValue("false"),
-        new ComponentWithFields.ComponentField().addNames("inferdirection", "inferdir", "id").setDescription("If set to true, instead of getting the direction from the target location, it gets the direction of an arbitrary vector from the caster to the target location.").setDefaultValue("false")
-    };
+    public static List<ComponentWithFields.ComponentField> FIELDS = Arrays.asList(
+        new ComponentWithFields.ComponentField().addNames("xoffset", "xo", "ox", "xoff").setMarkdownDescription("Additional offset in the X-axis.").setDefaultValue("0"),
+        new ComponentWithFields.ComponentField().addNames("yoffset", "yo", "oy", "yoff").setMarkdownDescription("Additional offset in the Y-axis.").setDefaultValue("0"),
+        new ComponentWithFields.ComponentField().addNames("zoffset", "zo", "oz", "zoff").setMarkdownDescription("Additional offset in the Z-axis.").setDefaultValue("0"),
+        new ComponentWithFields.ComponentField().addNames("forwardoffset", "fo", "of", "foff").setMarkdownDescription("Additional forward offset. This is based on the caster's yaw and pitch.").setDefaultValue("0"),
+        new ComponentWithFields.ComponentField().addNames("rightoffset", "ro", "or", "roff").setMarkdownDescription("Additional right offset. This is based on the caster's yaw and pitch. This is equivalent to `forwardoffset` but with pitch set to 0 and yaw rotated by -90.").setDefaultValue("0"),
+        new ComponentWithFields.ComponentField().addNames("verticalOffset", "vo", "ov", "voff").setMarkdownDescription("Additional vertical offset. This is based on the caster's yaw and pitch. This is equivalent to `forwardoffset` but with pitch rotated by +90.").setDefaultValue("0"),
+        new ComponentWithFields.ComponentField().addNames("scale").setMarkdownDescription("This mechanic takes the points and calculates a center point. Then, for each of the points, it calculates a vector from the center to that point. The size field simply multiplies this vector.").setDefaultValue("1"),
+        new ComponentWithFields.ComponentField().addNames("rotation", "rot").setMarkdownDescription("The rotation of the slash in degrees.").setDefaultValue("0"),
+        new ComponentWithFields.ComponentField().addNames("radians", "rad", "useradians", "ur").setMarkdownDescription("Whether to use radians instead of degrees for the rotation.").setDefaultValue("false"),
+        new ComponentWithFields.ComponentField().addNames("inferdirection", "inferdir", "id").setMarkdownDescription("If set to true, instead of getting the direction from the target location, it gets the direction of an arbitrary vector from the caster to the target location.").setDefaultValue("false")
+    );
+
+    static {
+        FIELDS.addAll(UtilFieldsMechanic.FIELDS);
+    }
 
     protected final PlaceholderDouble xOffset;
     protected final PlaceholderDouble yOffset;
@@ -86,16 +90,16 @@ public abstract class TransformableLocationsMechanic extends SkillMechanic imple
 
     public TransformableLocationsMechanic(SkillExecutor manager, File file, String line, MythicLineConfig mlc) {
         super(manager, file, line, mlc);
-        this.xOffset = mlc.getPlaceholderDouble(new String[]{"xoffset", "xo", "ox", "xoff"}, 0);
-        this.yOffset = mlc.getPlaceholderDouble(new String[]{"yoffset", "yo", "oy", "yoff"}, 0);
-        this.zOffset = mlc.getPlaceholderDouble(new String[]{"zoffset", "zo", "oz", "zoff"}, 0);
-        this.forwardOffset = mlc.getPlaceholderDouble(new String[]{"forwardoffset", "fo", "of", "foff"}, 0);
-        this.rightOffset = mlc.getPlaceholderDouble(new String[]{"rightoffset", "ro", "or", "roff"}, 0);
-        this.verticalOffset = mlc.getPlaceholderDouble(new String[]{"verticaloffset", "vo", "ov", "voff"}, 0);
-        this.scale = mlc.getPlaceholderDouble(new String[]{"scale", "s"}, 1);
-        this.rotation = mlc.getPlaceholderDouble(new String[]{"rotation", "rot"}, 0);
-        this.radians = mlc.getBoolean(new String[]{"radians", "rad", "useradians", "ur"}, false);
-        this.inferDirection = mlc.getBoolean(new String[]{"inferdirection", "inferdir", "id"}, false);
+        xOffset = mlc.getPlaceholderDouble(new String[]{"xoffset", "xo", "ox", "xoff"}, 0);
+        yOffset = mlc.getPlaceholderDouble(new String[]{"yoffset", "yo", "oy", "yoff"}, 0);
+        zOffset = mlc.getPlaceholderDouble(new String[]{"zoffset", "zo", "oz", "zoff"}, 0);
+        forwardOffset = mlc.getPlaceholderDouble(new String[]{"forwardoffset", "fo", "of", "foff"}, 0);
+        rightOffset = mlc.getPlaceholderDouble(new String[]{"rightoffset", "ro", "or", "roff"}, 0);
+        verticalOffset = mlc.getPlaceholderDouble(new String[]{"verticaloffset", "vo", "ov", "voff"}, 0);
+        scale = mlc.getPlaceholderDouble(new String[]{"scale", "s"}, 1);
+        rotation = mlc.getPlaceholderDouble(new String[]{"rotation", "rot"}, 0);
+        radians = mlc.getBoolean(new String[]{"radians", "rad", "useradians", "ur"}, false);
+        inferDirection = mlc.getBoolean(new String[]{"inferdirection", "inferdir", "id"}, false);
     }
 
     /**
@@ -124,23 +128,23 @@ public abstract class TransformableLocationsMechanic extends SkillMechanic imple
         Location casterLocation = BukkitAdapter.adapt(skillMetadata.getCaster().getLocation());
         return locations.stream().map(location -> {
             // add offsets
-            location.add(xOffset.get(), yOffset.get(), zOffset.get());
+            location.add(xOffset.get(skillMetadata), yOffset.get(skillMetadata), zOffset.get(skillMetadata));
             // add relative offsets
             location = LocationUtilities.relativeOffset(
                 location.clone().setDirection(
                     casterLocation.getDirection()
                 ),
-                forwardOffset.get(),
-                rightOffset.get(),
-                verticalOffset.get()
+                forwardOffset.get(skillMetadata),
+                rightOffset.get(skillMetadata),
+                verticalOffset.get(skillMetadata)
             );
             // rotations
             Vector casterToTarget = location.toVector().subtract(casterLocation.toVector());
-            casterToTarget = casterToTarget.rotateAroundAxis(casterLocation.getDirection().normalize(), toRadians(rotation.get()));
+            casterToTarget = casterToTarget.rotateAroundAxis(casterLocation.getDirection().normalize(), toRadians(rotation.get(skillMetadata)));
             location = casterLocation.clone().add(casterToTarget);
             // size transformation
             Vector vector = location.clone().subtract(center).toVector();
-            Location finalLocation = center.clone().add(vector.multiply(scale.get()));
+            Location finalLocation = center.clone().add(vector.multiply(scale.get(skillMetadata)));
             if (inferDirection) {
                 finalLocation.setDirection(casterToTarget);
             }

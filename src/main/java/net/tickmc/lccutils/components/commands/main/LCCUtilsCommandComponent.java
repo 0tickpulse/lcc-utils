@@ -1,6 +1,7 @@
 package net.tickmc.lccutils.components.commands.main;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import net.kyori.adventure.text.Component;
 import net.tickmc.lccutils.LccUtils;
 import net.tickmc.lccutils.components.ComponentCategory;
@@ -17,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 public class LCCUtilsCommandComponent extends CommandComponent {
-
     public LCCUtilsCommandComponent() {
         super();
         addNames("lccutils", "lccu", "lccutilities", "lccutil", "lccmm", "lccmythicmobs", "lccmythic", "lcc");
@@ -30,10 +30,10 @@ public class LCCUtilsCommandComponent extends CommandComponent {
     public @NotNull CommandAPICommand getCommand() {
         CommandAPICommand cmd = new CommandAPICommand(getName())
             .withAliases(getAliases())
-            .withHelp(getDescription(), getDescription())
+            .withHelp(getMarkdownDescription(), getMarkdownDescription())
             .withPermission("lccutils.command.lccutils")
             .executes((sender, args) -> {
-                sender.sendMessage(ComponentUtilities.joinComponentsAndCompress(
+                Component component = ComponentUtilities.joinComponentsAndCompress(
                     ComponentUtilities.hline,
                     Component.newline(),
                     ComponentUtilities.formatTitle("LccUtils v" + LccUtils.getVersion()),
@@ -41,30 +41,46 @@ public class LCCUtilsCommandComponent extends CommandComponent {
                     ComponentUtilities.formatBody(LccUtils.getPlugin().getDescription().getDescription()),
                     Component.newline(),
                     ComponentUtilities.formatBody("/lccutils debug"),
+                    Component.newline(),
                     ComponentUtilities.formatBody("/lccutils generateDocs"),
+                    Component.newline(),
                     ComponentUtilities.formatBody("/lccutils component [<category>] [<component>]"),
-                    ComponentUtilities.hline));
+                    Component.newline(),
+                    ComponentUtilities.formatBody("/lccutils update"),
+                    Component.newline(),
+                    ComponentUtilities.formatBody("/lccutils text [<text>]"),
+                    ComponentUtilities.hline);
+                sender.sendMessage(component);
             });
 
         /*
          * SUBCOMMANDS
          */
 
-        CommandAPICommand componentsCommand = new CommandAPICommand("component");
+        cmd.withSubcommand(new CommandAPICommand("text")
+            .withPermission("lccutils.command.lccutils.text")
+            .withArguments(new GreedyStringArgument("text"))
+            .executes((sender, args) -> {
+                String text = (String) args[0];
+                sender.sendMessage(ComponentUtilities.deserialize(text));
+            }));
+
+
+        CommandAPICommand componentCommand = new CommandAPICommand("component");
         for (Map.Entry<ComponentCategory, List<LccComponent<?>>> entry : ComponentManager.getComponents().entrySet()) {
             CommandAPICommand subcommand = new CommandAPICommand(entry.getKey().getSimpleReadableName())
-                .withPermission("lccutils.command.lccutils." + entry.getKey().getSimpleReadableName());
+                .withPermission("lccutils.command.lccutils.component." + entry.getKey().getSimpleReadableName());
             for (LccComponent<?> component : entry.getValue()) {
                 subcommand.withSubcommand(new CommandAPICommand(component.getName().replace(" ", "_"))
-                    .withPermission("lccutils.command.lccutils." + entry.getKey().getSimpleReadableName() + "." + component.getName())
+                    .withPermission("lccutils.command.lccutils.component." + entry.getKey().getSimpleReadableName() + "." + component.getName())
                     .executes((sender, args) -> {
                         sender.sendMessage(component.generateMinecraftEntry());
                     })
                 );
             }
-            componentsCommand.withSubcommand(subcommand);
+            componentCommand.withSubcommand(subcommand);
         }
-        cmd.withSubcommand(componentsCommand);
+        cmd.withSubcommand(componentCommand);
 
         // generate docs
         cmd.withSubcommand(new CommandAPICommand("generateDocs").executes((sender, args) -> {

@@ -6,8 +6,8 @@ import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.api.skills.placeholders.PlaceholderInt;
 import io.lumine.mythic.core.skills.SkillExecutor;
-import io.lumine.mythic.core.skills.SkillMechanic;
 import net.tickmc.lccutils.components.mechanics.MechanicComponent;
+import net.tickmc.lccutils.components.mechanics.UtilFieldsMechanic;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +29,7 @@ public class CustomModelDataMechanicComponent extends MechanicComponent {
         );
     }
 
-    public static class CustomModelDataMechanic extends SkillMechanic implements INoTargetSkill {
+    public static class CustomModelDataMechanic extends UtilFieldsMechanic implements INoTargetSkill {
         private final PlaceholderInt model;
         public CustomModelDataMechanic(SkillExecutor manager, File file, String line, MythicLineConfig mlc) {
             super(manager, file, line, mlc);
@@ -43,7 +43,7 @@ public class CustomModelDataMechanicComponent extends MechanicComponent {
             }
             ItemStack stack = (ItemStack) skillMetadata.getVariables().get("equip-item").get();
             ItemMeta newMeta = stack.getItemMeta();
-            newMeta.setCustomModelData(model.get());
+            newMeta.setCustomModelData(model.get(skillMetadata));
             stack.setItemMeta(newMeta);
             return SkillResult.SUCCESS;
         }

@@ -2,6 +2,9 @@ package net.tickmc.lccutils.managers.updates;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * A convenience class that manages a versioning system similar to semantic versioning, using the following format:
  * <pre>
@@ -21,23 +24,25 @@ public class Version implements Comparable<Version> {
         MAJOR, MINOR, PATCH, SNAPSHOT
     }
 
-    private static final String VERSION_REGEX = "^(\\d+)\\.(\\d+)\\.(\\d+)(-SNAPSHOT-\\d+)?$";
+    private static final Pattern VERSION_REGEX = Pattern.compile("^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(-SNAPSHOT-(?<snapshot>\\d+))?$");
 
     /**
-     * This constructor deserializes a version string into a {@link Version} object.
+     * This constructor deserializes a version string into a  object.
      *
      * @throws IllegalArgumentException if the version string is not valid.
      */
     public Version(@NotNull String version) {
-        if (!version.matches(VERSION_REGEX)) {
+        Matcher matcher = VERSION_REGEX.matcher(version);
+        if (!matcher.matches()) {
             throw new IllegalArgumentException("Invalid version format " + version + "! Must match " + VERSION_REGEX);
         }
         String[] split = version.split("\\.");
-        major = Integer.parseInt(split[0]);
-        minor = Integer.parseInt(split[1]);
-        patch = Integer.parseInt(split[2].split("-")[0]);
-        if (split.length == 4) {
-            snapshot = Integer.parseInt(split[3].split("-")[2]);
+        major = Integer.parseInt(matcher.group("major"));
+        minor = Integer.parseInt(matcher.group("minor"));
+        patch = Integer.parseInt(matcher.group("patch"));
+        String snapshotString = matcher.group("snapshot");
+        if (snapshotString != null) {
+            snapshot = Integer.parseInt(snapshotString);
         }
     }
 

@@ -89,7 +89,7 @@ public abstract class ComponentWithFields extends LccComponent<ComponentWithFiel
                     StringBuilder fieldBuilder = new StringBuilder();
                     fieldBuilder.append(field.getNames().stream().map(MarkdownUtilities::code).reduce((a, b) -> a + ", " + b).orElse(""))
                         .append(" - ")
-                        .append(field.getDescription());
+                        .append(field.getMarkdownDescription());
                     if (field.defaultValue != null) {
                         fieldBuilder.append(System.lineSeparator())
                             .append("  Default value: ")

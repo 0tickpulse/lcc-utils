@@ -18,7 +18,7 @@ public class McMMOBridge extends BridgeComponent {
     public McMMOBridge() {
         super();
         addNames("McMMO");
-        setDescription("LCCUtils has compatibility with McMMO. This bridge enables certain things like the " + DocumentationGenerator.MarkdownDocumentationGenerator.getInstance().link(new McMMOPartyPlaceholderComponent()) + ".");
+        setDescription("LCCUtils has compatibility with McMMO. This bridge enables certain components like the " + DocumentationGenerator.linkMarkdown(new McMMOPartyPlaceholderComponent()) + ".");
         addAuthors("0TickPulse");
     }
 

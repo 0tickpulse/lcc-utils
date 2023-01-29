@@ -20,7 +20,7 @@ public class UpdateManager {
         }
 
         try {
-            String assetsUrl = HttpsHelper.getAsJson(repoApiUrl.toString()).get("assets_url").getAsString();
+            String assetsUrl = HttpsHelper.getAsJson(repoApiUrl.toString()).getAsJsonObject().get("assets_url").getAsString();
             String downloadUrl = HttpsHelper.getAsJson(assetsUrl).getAsJsonArray().get(0).getAsJsonObject().get("browser_download_url").getAsString();
             UpdateManager.downloadUrl = new URL(downloadUrl);
         } catch (MalformedURLException e) {
@@ -29,7 +29,7 @@ public class UpdateManager {
     }
 
     public static Version updateLatestVersion() {
-        latestVersion = new Version(HttpsHelper.getAsJson(repoApiUrl.toString()).get("tag_name").getAsString());
+        latestVersion = new Version(HttpsHelper.getAsJson(repoApiUrl.toString()).getAsJsonObject().get("tag_name").getAsString());
         return latestVersion;
     }
 

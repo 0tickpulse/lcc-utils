@@ -13,7 +13,8 @@ import net.tickmc.lccutils.components.mythicplaceholders.main.EntityStandingOnPl
 public class ComponentRegisterer {
     public static void register() {
         // mechanics
-        ComponentManager.registerComponents(new SlashMechanicComponent(),
+        ComponentManager.registerComponents(
+            new SlashMechanicComponent(),
             // conditions
             new CanAttackConditionComponent(),
             // placeholders

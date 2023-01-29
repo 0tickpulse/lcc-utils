@@ -1,6 +1,7 @@
 package net.tickmc.lccutils.utilities;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -15,6 +16,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public class HttpsHelper {
     public static String get(String url) {
@@ -28,8 +30,8 @@ public class HttpsHelper {
         return null;
     }
 
-    public static JsonObject getAsJson(String url) {
-        return GeneralUtilities.parseJson(get(url));
+    public static JsonElement getAsJson(String url) {
+        return JsonParser.parseString(Objects.requireNonNull(get(url)));
     }
 
     /**

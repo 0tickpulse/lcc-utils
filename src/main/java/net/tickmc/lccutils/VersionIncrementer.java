@@ -24,7 +24,7 @@ import java.nio.file.Files;
 public final class VersionIncrementer {
 
     private static final String POM_PATH = "pom.xml";
-    private static final Version.Identifier INCREMENT = Version.Identifier.SNAPSHOT;
+    private static final Version.Identifier INCREMENT = Version.Identifier.MINOR;
 
     public static void increment() throws ParserConfigurationException, IOException, SAXException, XPathExpressionException, TransformerException {
         String versionString = getVersion();

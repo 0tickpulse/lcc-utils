@@ -6,7 +6,7 @@
 
     <groupId>net.tickmc</groupId>
     <artifactId>lcc-utils</artifactId>
-    <!-- VERSION_INCREMENT --> <version>2.1.2-SNAPSHOT-1</version>
+    <!-- VERSION_INCREMENT --> <version>2.2.2</version>
     <packaging>jar</packaging>
 
     <name>Lcc Utils</name>
